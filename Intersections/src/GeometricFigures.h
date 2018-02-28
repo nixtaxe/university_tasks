@@ -11,86 +11,108 @@ class Circle;
 class Polyline;
 
 
-class GeometricFigure
+struct Point
 {
-  public:
-    virtual vector<double>
-    intersect (GeometricFigure &) = 0;
-
-    virtual vector<double>
-    intersect (Line &) = 0;
-
-    virtual vector<double>
-    intersect (Circle &) = 0;
-
-    virtual vector<double>
-    intersect (Polyline &) = 0;
-
-    virtual
-    ~GeometricFigure () = 0;
-
-  protected:
-    vector<double> points_;
+  double x, y;
 };
 
 
-class Line : public GeometricFigure
+class GeometricFigure
 {
   public:
-    vector<double>
-    intersect (GeometricFigure &) override;
+    virtual vector<Point>
+    intersect (GeometricFigure&) = 0;
 
-    vector<double>
-    intersect (Line &) override;
+    virtual vector<Point>
+    intersect (Line&) = 0;
 
-    vector<double>
-    intersect (Circle &) override;
+    virtual vector<Point>
+    intersect (Circle&) = 0;
 
-    vector<double>
-    intersect (Polyline &) override;
+    virtual vector<Point>
+    intersect (Polyline&) = 0;
 
-    Line (vector<double> &points);
-    ~Line();
+    virtual
+    ~GeometricFigure () = 0;
 };
 
 
 class Circle : public GeometricFigure
 {
   public:
-    vector<double>
-    intersect (GeometricFigure &) override;
+    vector<Point>
+    intersect (GeometricFigure&) override;
 
-    vector<double>
-    intersect (Line &) override;
+    vector<Point>
+    intersect (Line&) override;
 
-    vector<double>
-    intersect (Circle &) override;
+    vector<Point>
+    intersect (Circle&) override;
 
-    vector<double>
-    intersect (Polyline &) override;
+    vector<Point>
+    intersect (Polyline&) override;
 
-    Circle (vector<double> &points);
-    ~Circle();
+    Point
+    getCenter ();
+
+    double
+    getRadius ();
+
+    Circle (Point& center, double& radius);
+
+    ~Circle () override;
+
+  private:
+    Point center_;
+    double radius_;
+};
+
+
+class Line : public GeometricFigure
+{
+  public:
+    vector<Point>
+    intersect (GeometricFigure&) override;
+
+    vector<Point>
+    intersect (Line&) override;
+
+    vector<Point>
+    intersect (Circle&) override;
+
+    vector<Point>
+    intersect (Polyline&) override;
+
+    Line (vector<Point>& points);
+
+    ~Line () override;
+
+  private:
+    vector<Point> points_;
 };
 
 
 class Polyline : public GeometricFigure
 {
   public:
-    vector<double>
-    intersect (GeometricFigure &) override;
+    vector<Point>
+    intersect (GeometricFigure&) override;
 
-    vector<double>
-    intersect (Line &) override;
+    vector<Point>
+    intersect (Line&) override;
 
-    vector<double>
-    intersect (Circle &) override;
+    vector<Point>
+    intersect (Circle&) override;
 
-    vector<double>
-    intersect (Polyline &) override;
+    vector<Point>
+    intersect (Polyline&) override;
 
-    Polyline (vector<double> &points);
-    ~Polyline();
+    Polyline (vector<Point>& points);
+
+    ~Polyline ();
+
+  private:
+    vector<Point> points_;
 };
 
 #endif //UNIVERSITY_TASKS_GEOMETRICFIGURES_H
