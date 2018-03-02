@@ -5,6 +5,9 @@
 #ifndef UNIVERSITY_TASKS_GEOMETRICFIGURES_H
 #define UNIVERSITY_TASKS_GEOMETRICFIGURES_H
 
+#include <vector>
+using namespace std;
+
 class GeometricFigure;
 class Line;
 class Circle;
@@ -58,7 +61,7 @@ class Circle : public GeometricFigure
     double
     getRadius ();
 
-    Circle (Point& center, double& radius);
+    Circle (const Point& center, const double& radius);
 
     ~Circle () override;
 
@@ -83,7 +86,7 @@ class Line : public GeometricFigure
     vector<Point>
     intersect (Polyline&) override;
 
-    Line (vector<Point>& points);
+    Line (const vector<Point>& points);
 
     ~Line () override;
 
@@ -107,7 +110,7 @@ class Polyline : public GeometricFigure
     vector<Point>
     intersect (Polyline&) override;
 
-    Polyline (vector<Point>& points);
+    Polyline (const vector<Point>& points);
 
     ~Polyline ();
 
