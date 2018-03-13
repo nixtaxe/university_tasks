@@ -11,7 +11,7 @@ using namespace std;
 class GeometricFigure;
 class Line;
 class Circle;
-class Polyline;
+class Multiline;
 
 
 struct Point
@@ -33,7 +33,7 @@ class GeometricFigure
     intersect (Circle&) = 0;
 
     virtual vector<Point>
-    intersect (Polyline&) = 0;
+    intersect (Multiline&) = 0;
 
     virtual
     ~GeometricFigure () = 0;
@@ -53,7 +53,7 @@ class Circle : public GeometricFigure
     intersect (Circle&) override;
 
     vector<Point>
-    intersect (Polyline&) override;
+    intersect (Multiline&) override;
 
     Point
     getCenter ();
@@ -84,7 +84,7 @@ class Line : public GeometricFigure
     intersect (Circle&) override;
 
     vector<Point>
-    intersect (Polyline&) override;
+    intersect (Multiline&) override;
 
     Line (const vector<Point>& points);
 
@@ -95,7 +95,7 @@ class Line : public GeometricFigure
 };
 
 
-class Polyline : public GeometricFigure
+class Multiline : public GeometricFigure
 {
   public:
     vector<Point>
@@ -108,11 +108,11 @@ class Polyline : public GeometricFigure
     intersect (Circle&) override;
 
     vector<Point>
-    intersect (Polyline&) override;
+    intersect (Multiline&) override;
 
-    Polyline (const vector<Point>& points);
+    Multiline (const vector<Point>& points);
 
-    ~Polyline ();
+    ~Multiline ();
 
   private:
     vector<Point> points_;

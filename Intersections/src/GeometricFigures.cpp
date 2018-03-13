@@ -7,8 +7,6 @@
 #include <cmath>
 #include <algorithm>
 
-using namespace std;
-
 GeometricFigure :: ~GeometricFigure ()
 {}
 
@@ -50,7 +48,7 @@ Circle :: intersect (Circle& circle)
 }
 
 vector<Point>
-Circle :: intersect (Polyline&)
+Circle :: intersect (Multiline&)
 {
   //...
 }
