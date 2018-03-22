@@ -5,10 +5,9 @@
 #include "GeometricFigures.h"
 
 #include <cmath>
-#include <algorithm>
 
-GeometricFigure :: ~GeometricFigure ()
-{}
+using namespace figures;
+using namespace std;
 
 vector<Point>
 Circle :: intersect (GeometricFigure& geometricFigure)
@@ -52,22 +51,3 @@ Circle :: intersect (Multiline&)
 {
   //...
 }
-
-Point
-Circle :: getCenter ()
-{
-  return center_;
-}
-
-double
-Circle :: getRadius ()
-{
-  return radius_;
-}
-
-Circle :: Circle (const Point& center, const double& radius)
-  : center_ (center), radius_ (radius)
-{}
-
-Circle :: ~Circle ()
-{}
