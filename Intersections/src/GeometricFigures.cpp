@@ -2,27 +2,28 @@
 // Created by nixtaxe on 28.02.2018.
 //
 
+#define _USE_MATH_DEFINES
+
 #include "GeometricFigures.h"
 
 #include <cmath>
 
-using namespace figures;
 using namespace std;
 
 vector<Point>
-Circle :: intersect (GeometricFigure& geometricFigure)
+Circle :: intersect ( GeometricFigure& geometricFigure )
 {
   return geometricFigure.intersect(*this);
 }
 
 vector<Point>
-Circle :: intersect (Line& line)
+Circle :: intersect ( Line& line )
 {
   //...
 }
 
 vector<Point>
-Circle :: intersect (Circle& circle)
+Circle :: intersect ( Circle& circle )
 {
   Point c1 = this->getCenter();
   Point c2 = circle.getCenter();
@@ -47,7 +48,13 @@ Circle :: intersect (Circle& circle)
 }
 
 vector<Point>
-Circle :: intersect (Multiline&)
+Circle :: intersect ( Multiline& multiLine )
 {
   //...
+}
+
+double
+Circle :: length()
+{
+  return 2.0 * M_PI * this->getRadius();
 }

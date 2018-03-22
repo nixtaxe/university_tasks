@@ -3,14 +3,16 @@
 //
 
 #define CATCH_CONFIG_MAIN
+#define _USE_MATH_DEFINES
 
+#include <cmath>
 #include "catch.h"
 #include "GeometricFigures.h"
 
 TEST_CASE("Circle-circle intersection", "[]") {
-    SECTION("On one x") {
+    SECTION("Check circle length") {
         Circle c1((Point){.x = 0, .y = 0}, 1);
-        REQUIRE(&c1 == NULL);
+        REQUIRE(c1.length() == 2.0 * M_PI);
     }
 }
 
