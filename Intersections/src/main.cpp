@@ -37,8 +37,8 @@ TEST_CASE( "Circle tests", "[]" )
       THEN ( "Return vector with one point" ) {
         vector<Point> result = c1.intersect( c2 );
         REQUIRE( result.size() == 1 );
-        REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 ) ) < EPS );
-        REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 ) ) < EPS );
+        REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 )) < EPS );
+        REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 )) < EPS );
       }
     }
   }
@@ -53,7 +53,7 @@ TEST_CASE( "Circle tests", "[]" )
         vector<Point> result = c.intersect( line );
         REQUIRE( result.size() == 2 );
         REQUIRE( abs( result[1].x ) < EPS );
-        REQUIRE( abs( result[1].y - 1.0) < EPS );
+        REQUIRE( abs( result[1].y - 1.0 ) < EPS );
         REQUIRE( abs( result[0].x - 1.0 ) < EPS );
         REQUIRE( abs( result[0].y ) < EPS );
       }
@@ -81,7 +81,7 @@ TEST_CASE( "Circle tests", "[]" )
         vector<Point> result = c.intersect( line );
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x ) < EPS );
-        REQUIRE( abs( result[0].y -1.0 ) < EPS );
+        REQUIRE( abs( result[0].y - 1.0 ) < EPS );
       }
     }
 
@@ -98,11 +98,12 @@ TEST_CASE( "Circle tests", "[]" )
   }
 }
 
-TEST_CASE( "Line tests", "[]" ) {
+TEST_CASE( "Line tests", "[]" )
+{
   SECTION( "Check line length" ) {
     Line line((Point) {.x = 0.0, .y = 0.0},
               (Point) {.x = 1.0, .y = 0.0} );
-    REQUIRE( abs(line.length() - 1.0) < EPS );
+    REQUIRE( abs( line.length() - 1.0 ) < EPS );
   }
 
   SECTION( "Check line-circle intersection" ) {
@@ -115,7 +116,7 @@ TEST_CASE( "Line tests", "[]" ) {
         vector<Point> result = line.intersect( c );
         REQUIRE( result.size() == 2 );
         REQUIRE( abs( result[1].x ) < EPS );
-        REQUIRE( abs( result[1].y - 1.0) < EPS );
+        REQUIRE( abs( result[1].y - 1.0 ) < EPS );
         REQUIRE( abs( result[0].x - 1.0 ) < EPS );
         REQUIRE( abs( result[0].y ) < EPS );
       }
@@ -143,7 +144,7 @@ TEST_CASE( "Line tests", "[]" ) {
         vector<Point> result = line.intersect( c );
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x ) < EPS );
-        REQUIRE( abs( result[0].y -1.0 ) < EPS );
+        REQUIRE( abs( result[0].y - 1.0 ) < EPS );
       }
     }
 
@@ -162,15 +163,15 @@ TEST_CASE( "Line tests", "[]" ) {
   SECTION ( "Check line-line intersection" ) {
     WHEN ( "Lines are not collinear and are intersecting" ) {
       Line line1((Point) {.x = 0.0, .y = 0.0},
-                (Point) {.x = 0.0, .y = 2.0} );
+                 (Point) {.x = 0.0, .y = 2.0} );
       Line line2((Point) {.x = -1.0, .y = 1.0},
-                (Point) {.x = 1.0, .y = 1.0} );
+                 (Point) {.x = 1.0, .y = 1.0} );
 
       THEN ( "Return vector with one point" ) {
         vector<Point> result = line1.intersect( line2 );
-        REQUIRE(result.size() == 1);
-        REQUIRE(abs( result[0].x ) < EPS);
-        REQUIRE(abs ( result[0].y - 1.0 ) < EPS);
+        REQUIRE( result.size() == 1 );
+        REQUIRE( abs( result[0].x ) < EPS );
+        REQUIRE( abs( result[0].y - 1.0 ) < EPS );
       }
     }
 
@@ -182,41 +183,64 @@ TEST_CASE( "Line tests", "[]" ) {
 
       THEN ( "Return vector with two points" ) {
         vector<Point> result = line1.intersect( line2 );
-        REQUIRE(result.size() == 2);
-        REQUIRE(abs( result[0].x ) < EPS);
-        REQUIRE(abs( result[1].x ) < EPS);
-        REQUIRE(abs ( result[1].y - 2.0 ) < EPS);
-        REQUIRE(abs ( result[0].y ) < EPS);
+        REQUIRE( result.size() == 2 );
+        REQUIRE( abs( result[0].x ) < EPS );
+        REQUIRE( abs( result[1].x ) < EPS );
+        REQUIRE( abs( result[1].y - 2.0 ) < EPS );
+        REQUIRE( abs( result[0].y ) < EPS );
       }
     }
   }
 }
 
-TEST_CASE( "Multiline tests", "[]" ) {
+TEST_CASE( "Multiline tests", "[]" )
+{
   SECTION( "Check multiline length" ) {
-    vector<Point> v{(Point) {.x = 0.0, .y = 1.0},
-                    (Point) {.x = 1.0, .y = 1.0},
-                    (Point) {.x = 1.0, .y = 0.0},
-                    (Point) {.x = 0.0, .y = 0.0},
-                    (Point) {.x = 0.0, .y = 1.0}};
-    Multiline multiline(v);
-    REQUIRE(abs( multiline.length() - 4.0 ) < EPS);
+    vector<Point> v {(Point) {.x = 0.0, .y = 1.0},
+                     (Point) {.x = 1.0, .y = 1.0},
+                     (Point) {.x = 1.0, .y = 0.0},
+                     (Point) {.x = 0.0, .y = 0.0},
+                     (Point) {.x = 0.0, .y = 1.0}};
+    Multiline multiline( v );
+    REQUIRE( abs( multiline.length() - 4.0 ) < EPS );
   }
 
   SECTION( "Check multiline-line intersection" ) {
     WHEN( "Line intersects multiline in multiple similar points" ) {
       Line line((Point) {.x = 0.0, .y = 0.0},
-                (Point) {.x = 0.0, .y = 2.0});
-      vector<Point> v{(Point) {.x = 0.0, .y = 1.0},
-                      (Point) {.x = 1.0, .y = 1.0},
-                      (Point) {.x = 0.0, .y = 2.0},
-                      (Point) {.x = 0.0, .y = 1.0},
-                      (Point) {.x = 0.0, .y = 0.0}};
-      Multiline multiline(v);
+                (Point) {.x = 0.0, .y = 2.0} );
+      vector<Point> v {(Point) {.x = 0.0, .y = 1.0},
+                       (Point) {.x = 1.0, .y = 1.0},
+                       (Point) {.x = 0.0, .y = 2.0},
+                       (Point) {.x = 0.0, .y = 1.0},
+                       (Point) {.x = 0.0, .y = 0.0}};
+      Multiline multiline( v );
 
       THEN( "Return vector with original points" ) {
         vector<Point> result = multiline.intersect( line );
-        REQUIRE(result.size() == 3);
+        REQUIRE( result.size() == 3 );
+      }
+    }
+
+    SECTION( "Check multiline-multiline intersection" ) {
+
+      WHEN( "Multiline intersects multiline in one point" ) {
+        vector<Point> v1 {(Point) {.x = 0.0, .y = 1.0},
+                          (Point) {.x = 1.0, .y = 1.0},
+                          (Point) {.x = 0.0, .y = 2.0},
+                          (Point) {.x = 0.0, .y = 1.0},
+                          (Point) {.x = 0.0, .y = 0.0}};
+        Multiline multiline1( v1 );
+        vector<Point> v2 {(Point) {.x = -1.0, .y = 0.5},
+                          (Point) {.x = 0.5, .y = 0.5}};
+        Multiline multiline2( v2 );
+
+        THEN( "Return vector with one point" ) {
+          vector<Point> result = multiline1.intersect( multiline2 );
+          REQUIRE( result.size() == 1 );
+          REQUIRE( abs( result[0].x ) < EPS );
+          REQUIRE( abs( result[0].y - 0.5 ) < EPS );
+        }
       }
     }
   }

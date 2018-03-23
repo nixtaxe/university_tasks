@@ -13,7 +13,7 @@
 using namespace std;
 
 bool
-Point::operator() (Point i, Point j)
+Point::operator()( Point i, Point j )
 {
   if (abs( i.x - j.x ) < EPS)
     return i.y <= j.y;
@@ -74,18 +74,18 @@ Circle::intersect( Line& line )
 
   double a = pow( difP2P1.x, 2.0 ) + pow( difP2P1.y, 2.0 );
   double b = 2.0 * ((difP1C.x * difP2P1.x + difP1C.y * difP2P1.y));
-  double c = pow( difP1C.x, 2.0 ) + pow( difP1C.y, 2.0 ) - r*r;
+  double c = pow( difP1C.x, 2.0 ) + pow( difP1C.y, 2.0 ) - r * r;
 
   double discriminant = b * b - 4.0 * a * c;
-  if ( abs( discriminant ) <= EPS) {
+  if (abs( discriminant ) <= EPS) {
     double t = -b / (2.0 * a);
     return vector<Point> {{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
   }
   if (discriminant < 0.0)
     return vector<Point> {};
   else {
-    double t1 = (-b + sqrt(discriminant)) / (2.0 * a);
-    double t2 = (-b - sqrt(discriminant)) / (2.0 * a);
+    double t1 = (-b + sqrt( discriminant )) / (2.0 * a);
+    double t2 = (-b - sqrt( discriminant )) / (2.0 * a);
 
     if (t2 < 0.0 || t2 > 1.0)
       return vector<Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y}};
@@ -141,8 +141,9 @@ Circle::intersect( Circle& circle )
 vector<Point>
 Circle::intersect( Multiline& multiLine )
 {
-  //...
+  multiLine.intersect( *this );
 }
+
 
 Line::Line( const Point& start, const Point& end )
   : start_( start ), end_( end )
@@ -167,25 +168,26 @@ Line::getEnd() const
 double
 Line::length()
 {
-  return sqrt(pow( start_.x - end_.x, 2.0 ) + pow( start_.y - end_.y, 2.0 ));
+  return sqrt( pow( start_.x - end_.x, 2.0 ) + pow( start_.y - end_.y, 2.0 ));
 }
 
 vector<Point>
-Line::intersect( GeometricFigure& geometricFigure)
+Line::intersect( GeometricFigure& geometricFigure )
 {
   return geometricFigure.intersect( *this );
 }
 
 bool
-Line::isPointOnLine( const Point& p, const Line& line ) const {
+Line::isPointOnLine( const Point& p, const Line& line ) const
+{
   return p.x >= min( line.getStart().x, line.getEnd().x ) &&
-    p.x <= max( line.getStart().x, line.getEnd().x ) ||
-    p.y >= min( line.getStart().y, line.getEnd().y ) &&
-    p.y <= max( line.getStart().y, line.getEnd().y );
+         p.x <= max( line.getStart().x, line.getEnd().x ) ||
+         p.y >= min( line.getStart().y, line.getEnd().y ) &&
+         p.y <= max( line.getStart().y, line.getEnd().y );
 }
 
 vector<Point>
-Line::intersect( Line& line)
+Line::intersect( Line& line )
 {
   //http://algolist.manual.ru/maths/geom/intersect/lineline2d.php
   Point p1 = this->start_;
@@ -198,10 +200,10 @@ Line::intersect( Line& line)
   if (abs( denominator ) < EPS) {
     vector<Point> result = {};
 
-    if (isPointOnLine(p1, line))
+    if (isPointOnLine( p1, line ))
       result.emplace_back( p1 );
 
-    if (isPointOnLine( p2, line))
+    if (isPointOnLine( p2, line ))
       result.emplace_back( p2 );
 
     if (isPointOnLine( p3, *this ))
@@ -222,12 +224,12 @@ Line::intersect( Line& line)
   if (u1 < 0.0 || u1 > 1.0)
     if (u2 >= 0.0 && u2 <= 1.0)
       return vector<Point> {(Point) {.x = p3.x + u2 * (p4.x - p3.x),
-                                      .y = p3.y + u2 * (p4.y - p3.y)}};
+        .y = p3.y + u2 * (p4.y - p3.y)}};
     else
       return vector<Point> {};
 
   return vector<Point> {(Point) {.x = p1.x + u1 * (p2.x - p1.x),
-                                  .y = p1.y + u1 * (p2.y - p1.y)}};
+    .y = p1.y + u1 * (p2.y - p1.y)}};
 }
 
 vector<Point>
@@ -242,10 +244,11 @@ Line::intersect( Multiline& multiline )
   multiline.intersect( *this );
 }
 
+
 Multiline::Multiline( vector<Point>& points )
-  : points_ (points)
+  : points_( points )
 {
- ;
+  ;
 }
 
 Multiline::~Multiline() = default;
@@ -260,6 +263,16 @@ Multiline::length()
   return result;
 }
 
+void
+Multiline::deleteDuplicatePoints( vector<Point>& vector )
+{
+  for (int i = 0; i < vector.size() - 1; ++i)
+    for (int j = vector.size() - 1; j > i; --j)
+      if (abs( vector[i].x - vector[j].x ) < EPS &&
+          abs( vector[i].y - vector[j].y ) < EPS)
+        vector.erase( vector.begin() + j );
+}
+
 vector<Point>
 Multiline::intersect( GeometricFigure& geometricFigure )
 {
@@ -271,29 +284,40 @@ Multiline::intersect( Line& line )
 {
   vector<Point> result = {};
   for (int i = 0; i < this->points_.size(); ++i) {
-    vector<Point> tmp = Line(this->points_[i], this->points_[i + 1]).intersect(line);
-    result.insert(result.end(), tmp.begin(), tmp.end());
+    vector<Point> tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( line );
+    result.insert( result.end(), tmp.begin(), tmp.end());
   }
 
-  //sort(result.begin(), result.end());
-
-  for (int i = 0; i < result.size() - 1; ++i)
-    for (int j = result.size() - 1; j > i; --j)
-      if (abs( result[i].x - result[j].x ) < EPS &&
-          abs( result[i].y - result[j].y ) < EPS)
-        result.erase(result.begin() + j);
+  deleteDuplicatePoints( result );
 
   return result;
 }
 
 vector<Point>
-Multiline::intersect( Circle& )
+Multiline::intersect( Circle& circle )
 {
-  //...
+  vector<Point> result = {};
+  for (int i = 0; i < this->points_.size(); ++i) {
+    vector<Point> tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( circle );
+    result.insert( result.end(), tmp.begin(), tmp.end());
+  }
+
+  deleteDuplicatePoints( result );
+
+  return result;
 }
 
 vector<Point>
-Multiline::intersect( Multiline& )
+Multiline::intersect( Multiline& multiline )
 {
-  //...
+  vector<Point> result = {};
+  for (int i = 0; i < this->points_.size(); ++i) {
+    Line( this->points_[i], this->points_[i + 1] ).intersect( multiline );
+    vector<Point> tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( multiline );
+    result.insert( result.end(), tmp.begin(), tmp.end());
+  }
+
+  deleteDuplicatePoints( result );
+
+  return result;
 }
