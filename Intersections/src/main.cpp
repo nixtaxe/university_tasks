@@ -173,8 +173,8 @@ TEST_CASE( "Line tests", "[]" ) {
         REQUIRE(result.size() == 2);
         REQUIRE(abs( result[0].x ) < EPS);
         REQUIRE(abs( result[1].x ) < EPS);
-        REQUIRE(abs ( result[0].y - 2.0 ) < EPS);
-        REQUIRE(abs ( result[1].y ) < EPS);
+        REQUIRE(abs ( result[1].y - 2.0 ) < EPS);
+        REQUIRE(abs ( result[0].y ) < EPS);
       }
     }
   }

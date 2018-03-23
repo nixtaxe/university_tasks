@@ -108,6 +108,9 @@ class Line : public GeometricFigure
     intersect( Multiline& ) override;
 
   private:
+    bool
+    isInsideLine( const Point& p, const Line& line ) const;
+
     Point start_, end_;
 };
 

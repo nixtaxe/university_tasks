@@ -155,6 +155,14 @@ Line::intersect( GeometricFigure& geometricFigure)
   return geometricFigure.intersect( *this );
 }
 
+bool
+Line::isInsideLine( const Point& p, const Line& line ) const {
+  return p.x > min( line.getStart().x, line.getEnd().x ) &&
+    p.x < max( line.getStart().x, line.getEnd().x ) ||
+    p.y > min( line.getStart().y, line.getEnd().y ) &&
+    p.y < max( line.getStart().y, line.getEnd().y );
+}
+
 vector<Point>
 Line::intersect( Line& line)
 {
@@ -169,48 +177,17 @@ Line::intersect( Line& line)
   if (abs( denominator ) < EPS) {
     vector<Point> result = {};
 
-    if (abs( p1.x - p2.x ) > EPS) {
-      Point maxP = p1.x > p2.x ? p1 : p2;
-      bool isBetweenPoints = maxP.x > min( p3.x, p4.x ) && maxP.x < max( p3.x, p4.x );
-      if (isBetweenPoints)
-        result.emplace_back( maxP );
+    if (isInsideLine(p1, line))
+      result.emplace_back( p1 );
 
-      maxP = p3.x > p4.x ? p3 : p4;
-      isBetweenPoints = maxP.x > min( p1.x, p2.x ) && maxP.x < max( p1.x, p2.x );
-      if (isBetweenPoints)
-        result.emplace_back( maxP );
+    if (isInsideLine( p2, line))
+      result.emplace_back( p2 );
 
-      Point minP = p1.x < p2.x ? p1 : p2;
-      isBetweenPoints = minP.x > min( p3.x, p4.x ) && minP.x < max( p3.x, p4.x );
-      if (isBetweenPoints)
-        result.emplace_back( minP );
+    if (isInsideLine( p3, *this ))
+      result.emplace_back( p3 );
 
-      minP = p3.x < p4.x ? p3 : p4;
-      isBetweenPoints = minP.x > min( p1.x, p2.x ) && minP.x < max( p1.x, p2.x );
-      if (isBetweenPoints)
-        result.emplace_back( minP );
-    }
-    else {
-      Point maxP = p1.y > p2.y ? p1 : p2;
-      bool isBetweenPoints = maxP.y > min( p3.y, p4.y ) && maxP.y < max( p3.y, p4.y );
-      if (isBetweenPoints)
-        result.emplace_back( maxP );
-
-      maxP = p3.y > p4.y ? p3 : p4;
-      isBetweenPoints = maxP.y > min( p1.y, p2.y ) && maxP.y < max( p1.y, p2.y );
-      if (isBetweenPoints)
-        result.emplace_back( maxP );
-
-      Point minP = p1.y < p2.y ? p1 : p2;
-      isBetweenPoints = minP.y > min( p3.y, p4.y ) && minP.y < max( p3.y, p4.y );
-      if (isBetweenPoints)
-        result.emplace_back( minP );
-
-      minP = p3.y < p4.y ? p3 : p4;
-      isBetweenPoints = minP.y > min( p1.y, p2.y ) && minP.y < max( p1.y, p2.y );
-      if (isBetweenPoints)
-        result.emplace_back( minP );
-    }
+    if (isInsideLine( p4, *this ))
+      result.emplace_back( p4 );
 
     return result;
   }
@@ -223,18 +200,13 @@ Line::intersect( Line& line)
 
   if (u1 < 0.0 || u1 > 1.0)
     if (u2 >= 0.0 && u2 <= 1.0)
-      return vector<Point> {(Point) {.x = p3.x + u2 * (p4.x - p3.x), .y = p3.y + u2 * (p4.y - p3.y)}};
+      return vector<Point> {(Point) {.x = p3.x + u2 * (p4.x - p3.x),
+                                      .y = p3.y + u2 * (p4.y - p3.y)}};
     else
       return vector<Point> {};
 
-  if (u2 < 0.0 || u2 > 1.0)
-    if (u1 >= 0.0 && u1 <= 1.0)
-      return vector<Point> {(Point) {.x = p1.x + u1 * (p2.x - p1.x), .y = p1.y + u1 * (p2.y - p1.y)}};
-    else
-      return vector<Point> {};
-
-  return vector<Point> {(Point) {.x = p1.x + u1 * (p2.x - p1.x), .y = p1.y + u1 * (p2.y - p1.y)}};
-
+  return vector<Point> {(Point) {.x = p1.x + u1 * (p2.x - p1.x),
+                                  .y = p1.y + u1 * (p2.y - p1.y)}};
 }
 
 vector<Point>
