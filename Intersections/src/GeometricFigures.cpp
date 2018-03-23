@@ -158,6 +158,7 @@ Line::intersect( GeometricFigure& geometricFigure)
 vector<Point>
 Line::intersect( Line& line)
 {
+  //http://algolist.manual.ru/maths/geom/intersect/lineline2d.php
   Point p1 = this->start_;
   Point p2 = this->end_;
   Point p3 = line.getStart();
@@ -168,25 +169,48 @@ Line::intersect( Line& line)
   if (abs( denominator ) < EPS) {
     vector<Point> result = {};
 
-    Point maxP = p1.x > p2.x ? p1 : p2;
-    bool isBetweenPoints = maxP.x > min( p3.x, p4.x ) && maxP.x < max( p3.x, p4.x );
-    if (isBetweenPoints)
-      result.emplace_back(maxP);
+    if (abs( p1.x - p2.x ) > EPS) {
+      Point maxP = p1.x > p2.x ? p1 : p2;
+      bool isBetweenPoints = maxP.x > min( p3.x, p4.x ) && maxP.x < max( p3.x, p4.x );
+      if (isBetweenPoints)
+        result.emplace_back( maxP );
 
-    maxP = p3.x > p4.x ? p3 : p4;
-    isBetweenPoints = maxP.x > min( p1.x, p2.x ) && maxP.x < max( p1.x, p2.x );
-    if (isBetweenPoints)
-      result.emplace_back(maxP);
+      maxP = p3.x > p4.x ? p3 : p4;
+      isBetweenPoints = maxP.x > min( p1.x, p2.x ) && maxP.x < max( p1.x, p2.x );
+      if (isBetweenPoints)
+        result.emplace_back( maxP );
 
-    Point minP = p1.x < p2.x ? p1 : p2;
-    isBetweenPoints = minP.x > min( p3.x, p4.x ) && minP.x < max( p3.x, p4.x );
-    if (isBetweenPoints)
-      result.emplace_back(minP);
+      Point minP = p1.x < p2.x ? p1 : p2;
+      isBetweenPoints = minP.x > min( p3.x, p4.x ) && minP.x < max( p3.x, p4.x );
+      if (isBetweenPoints)
+        result.emplace_back( minP );
 
-    minP = p3.x < p4.x ? p3 : p4;
-    isBetweenPoints = minP.x > min( p1.x, p2.x ) && minP.x < max( p1.x, p2.x );
-    if (isBetweenPoints)
-      result.emplace_back(minP);
+      minP = p3.x < p4.x ? p3 : p4;
+      isBetweenPoints = minP.x > min( p1.x, p2.x ) && minP.x < max( p1.x, p2.x );
+      if (isBetweenPoints)
+        result.emplace_back( minP );
+    }
+    else {
+      Point maxP = p1.y > p2.y ? p1 : p2;
+      bool isBetweenPoints = maxP.y > min( p3.y, p4.y ) && maxP.y < max( p3.y, p4.y );
+      if (isBetweenPoints)
+        result.emplace_back( maxP );
+
+      maxP = p3.y > p4.y ? p3 : p4;
+      isBetweenPoints = maxP.y > min( p1.y, p2.y ) && maxP.y < max( p1.y, p2.y );
+      if (isBetweenPoints)
+        result.emplace_back( maxP );
+
+      Point minP = p1.y < p2.y ? p1 : p2;
+      isBetweenPoints = minP.y > min( p3.y, p4.y ) && minP.y < max( p3.y, p4.y );
+      if (isBetweenPoints)
+        result.emplace_back( minP );
+
+      minP = p3.y < p4.y ? p3 : p4;
+      isBetweenPoints = minP.y > min( p1.y, p2.y ) && minP.y < max( p1.y, p2.y );
+      if (isBetweenPoints)
+        result.emplace_back( minP );
+    }
 
     return result;
   }

@@ -148,7 +148,7 @@ TEST_CASE( "Line tests", "[]" ) {
   }
 
   SECTION ( "Check line-line intersection" ) {
-    WHEN ( "Lines are not parallel and are intersecting" ) {
+    WHEN ( "Lines are not collinear and are intersecting" ) {
       Line line1((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
       Line line2((Point) {.x = -1.0, .y = 1.0},
@@ -159,6 +159,22 @@ TEST_CASE( "Line tests", "[]" ) {
         REQUIRE(result.size() == 1);
         REQUIRE(abs( result[0].x ) < EPS);
         REQUIRE(abs ( result[0].y - 1.0 ) < EPS);
+      }
+    }
+
+    WHEN ( "Lines are collinear and are intersecting" ) {
+      Line line1((Point) {.x = 0.0, .y = 0.0},
+                 (Point) {.x = 0.0, .y = 2.0} );
+      Line line2((Point) {.x = 0.0, .y = -1.0},
+                 (Point) {.x = 0.0, .y = 3.0} );
+
+      THEN ( "Return vector with two points" ) {
+        vector<Point> result = line1.intersect( line2 );
+        REQUIRE(result.size() == 2);
+        REQUIRE(abs( result[0].x ) < EPS);
+        REQUIRE(abs( result[1].x ) < EPS);
+        REQUIRE(abs ( result[0].y - 2.0 ) < EPS);
+        REQUIRE(abs ( result[1].y ) < EPS);
       }
     }
   }
