@@ -72,6 +72,17 @@ TEST_CASE( "Circle tests", "[]" )
         REQUIRE( abs( result[0].y -1.0 ) < EPS );
       }
     }
+
+    WHEN ( "No intersection" ) {
+      Circle c((Point) {.x = 1.0, .y = 1.0}, 1.0 );
+      Line line((Point) {.x = -1.0, .y = 0.0},
+                (Point) {.x = 0.0, .y = 2.0} );
+
+      THEN ( "Return empty vector" ) {
+        vector<Point> result = c.intersect( line );
+        REQUIRE( result.size() == 0 );
+      }
+    }
   }
 }
 
@@ -116,11 +127,38 @@ TEST_CASE( "Line tests", "[]" ) {
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
 
-      THEN ( "Return one point" ) {
+      THEN ( "Return vector with one point" ) {
         vector<Point> result = line.intersect( c );
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x ) < EPS );
         REQUIRE( abs( result[0].y -1.0 ) < EPS );
+      }
+    }
+
+    WHEN ( "No intersection" ) {
+      Circle c((Point) {.x = 1.0, .y = 1.0}, 1.0 );
+      Line line((Point) {.x = -1.0, .y = 0.0},
+                (Point) {.x = 0.0, .y = 2.0} );
+
+      THEN ( "Return empty vector" ) {
+        vector<Point> result = line.intersect( c );
+        REQUIRE( result.size() == 0 );
+      }
+    }
+  }
+
+  SECTION ( "Check line-line intersection" ) {
+    WHEN ( "Lines are not parallel and are intersecting" ) {
+      Line line1((Point) {.x = 0.0, .y = 0.0},
+                (Point) {.x = 0.0, .y = 2.0} );
+      Line line2((Point) {.x = -1.0, .y = 1.0},
+                (Point) {.x = 1.0, .y = 1.0} );
+
+      THEN ( "Return vector with one point" ) {
+        vector<Point> result = line1.intersect( line2 );
+        REQUIRE(result.size() == 1);
+        REQUIRE(abs( result[0].x ) < EPS);
+        REQUIRE(abs ( result[0].y - 1.0 ) < EPS);
       }
     }
   }

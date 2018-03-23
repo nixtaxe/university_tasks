@@ -46,6 +46,7 @@ Circle::intersect( GeometricFigure& geometricFigure )
 vector<Point>
 Circle::intersect( Line& line )
 {
+  //http://forum2007.algolist.ru/showflat.php/Cat/0/Number/4825/Main/4781
   double r = this->radius_;
   Point center = this->center_;
 
@@ -157,7 +158,59 @@ Line::intersect( GeometricFigure& geometricFigure)
 vector<Point>
 Line::intersect( Line& line)
 {
-  //...
+  Point p1 = this->start_;
+  Point p2 = this->end_;
+  Point p3 = line.getStart();
+  Point p4 = line.getEnd();
+
+  double denominator = ((p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y));
+
+  if (abs( denominator ) < EPS) {
+    vector<Point> result = {};
+
+    Point maxP = p1.x > p2.x ? p1 : p2;
+    bool isBetweenPoints = maxP.x > min( p3.x, p4.x ) && maxP.x < max( p3.x, p4.x );
+    if (isBetweenPoints)
+      result.emplace_back(maxP);
+
+    maxP = p3.x > p4.x ? p3 : p4;
+    isBetweenPoints = maxP.x > min( p1.x, p2.x ) && maxP.x < max( p1.x, p2.x );
+    if (isBetweenPoints)
+      result.emplace_back(maxP);
+
+    Point minP = p1.x < p2.x ? p1 : p2;
+    isBetweenPoints = minP.x > min( p3.x, p4.x ) && minP.x < max( p3.x, p4.x );
+    if (isBetweenPoints)
+      result.emplace_back(minP);
+
+    minP = p3.x < p4.x ? p3 : p4;
+    isBetweenPoints = minP.x > min( p1.x, p2.x ) && minP.x < max( p1.x, p2.x );
+    if (isBetweenPoints)
+      result.emplace_back(minP);
+
+    return result;
+  }
+
+  double u1 = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) /
+              denominator;
+
+  double u2 = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) /
+              denominator;
+
+  if (u1 < 0.0 || u1 > 1.0)
+    if (u2 >= 0.0 && u2 <= 1.0)
+      return vector<Point> {(Point) {.x = p3.x + u2 * (p4.x - p3.x), .y = p3.y + u2 * (p4.y - p3.y)}};
+    else
+      return vector<Point> {};
+
+  if (u2 < 0.0 || u2 > 1.0)
+    if (u1 >= 0.0 && u1 <= 1.0)
+      return vector<Point> {(Point) {.x = p1.x + u1 * (p2.x - p1.x), .y = p1.y + u1 * (p2.y - p1.y)}};
+    else
+      return vector<Point> {};
+
+  return vector<Point> {(Point) {.x = p1.x + u1 * (p2.x - p1.x), .y = p1.y + u1 * (p2.y - p1.y)}};
+
 }
 
 vector<Point>
