@@ -17,27 +17,24 @@ Circle::Circle( const Point& center, const double& radius )
   ;
 }
 
-Circle::~Circle() = default
-{
-  ;
-}
+Circle::~Circle() = default;
 
 Point
 Circle::getCenter() const
 {
-  return this->center_;
+  return center_;
 }
 
 double
 Circle::getRadius() const
 {
-  return this->radius_;
+  return radius_;
 }
 
 double
 Circle::length()
 {
-  return 2.0 * M_PI * this->getRadius();
+  return 2.0 * M_PI * radius_;
 }
 
 vector<Point>
@@ -49,17 +46,46 @@ Circle::intersect( GeometricFigure& geometricFigure )
 vector<Point>
 Circle::intersect( Line& line )
 {
-  //...
+  double r = this->radius_;
+  Point center = this->center_;
+
+  Point p1 = line.getStart();
+  Point p2 = line.getEnd();
+
+  Point difP2P1 = {p2.x - p1.x, p2.y - p1.y};
+  Point difP1C = {p1.x - center.x, p1.y - center.y};
+
+  double a = pow( difP2P1.x, 2.0 ) + pow( difP2P1.y, 2.0 );
+  double b = 2.0 * ((difP1C.x * difP2P1.x + difP1C.y * difP2P1.y));
+  double c = pow( difP1C.x, 2.0 ) + pow( difP1C.y, 2.0 ) - r*r;
+
+  double discriminant = b * b - 4.0 * a * c;
+  if (sqrt( discriminant ) < EPS) {
+    double t = -b / (2.0 * a);
+    return vector<Point> {{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
+  }
+  if (discriminant < 0.0)
+    return vector<Point> {};
+  else {
+    double t1 = (-b + sqrt(discriminant)) / (2.0 * a);
+    double t2 = (-b - sqrt(discriminant)) / (2.0 * a);
+
+    if (t2 < 0.0)
+      return vector<Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y}};
+
+    return vector<Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y},
+                          {p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
+  }
 }
 
 vector<Point>
 Circle::intersect( Circle& circle )
 {
-  Point c1 = this->getCenter();
+  Point c1 = this->center_;
   Point c2 = circle.getCenter();
 
   double dist = sqrt( pow( c1.x - c2.x, 2.0 ) + pow( c1.y - c2.y, 2.0 ));
-  double r1 = this->getRadius();
+  double r1 = this->radius_;
   double r2 = circle.getRadius();
   double maxR = max( r1, r2 );
   double minR = min( r1, r2 );
@@ -89,6 +115,56 @@ Circle::intersect( Circle& circle )
 
 vector<Point>
 Circle::intersect( Multiline& multiLine )
+{
+  //...
+}
+
+Line::Line( const Point& start, const Point& end )
+  : start_( start ), end_( end )
+{
+  ;
+}
+
+Line::~Line() = default;
+
+Point
+Line::getStart() const
+{
+  return start_;
+}
+
+Point
+Line::getEnd() const
+{
+  return end_;
+}
+
+double
+Line::length()
+{
+  return sqrt(pow( start_.x - end_.x, 2.0 ) + pow( start_.y - end_.y, 2.0 ));
+}
+
+vector<Point>
+Line::intersect( GeometricFigure& geometricFigure)
+{
+  return geometricFigure.intersect( *this );
+}
+
+vector<Point>
+Line::intersect( Line& line)
+{
+  //...
+}
+
+vector<Point>
+Line::intersect( Circle& circle )
+{
+  return circle.intersect( *this );
+}
+
+vector<Point>
+Line::intersect( Multiline& multiline )
 {
   //...
 }

@@ -82,6 +82,19 @@ class Circle : public GeometricFigure
 class Line : public GeometricFigure
 {
   public:
+    Line( const Point& start, const Point& end );
+
+    ~Line() override;
+
+    Point
+    getStart() const;
+
+    Point
+    getEnd() const;
+
+    double
+    length();
+
     vector<Point>
     intersect( GeometricFigure& ) override;
 
@@ -93,16 +106,6 @@ class Line : public GeometricFigure
 
     vector<Point>
     intersect( Multiline& ) override;
-
-    double
-    length();
-
-    Line( const Point& start, const Point& end )
-      : start_( start ), end_( end )
-    {
-    };
-
-    ~Line() override = default;
 
   private:
     Point start_, end_;
