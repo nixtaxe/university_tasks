@@ -156,7 +156,7 @@ Line::intersect( GeometricFigure& geometricFigure)
 }
 
 bool
-Line::isInsideLine( const Point& p, const Line& line ) const {
+Line::isPointOnLine( const Point& p, const Line& line ) const {
   return p.x > min( line.getStart().x, line.getEnd().x ) &&
     p.x < max( line.getStart().x, line.getEnd().x ) ||
     p.y > min( line.getStart().y, line.getEnd().y ) &&
@@ -177,16 +177,16 @@ Line::intersect( Line& line)
   if (abs( denominator ) < EPS) {
     vector<Point> result = {};
 
-    if (isInsideLine(p1, line))
+    if (isPointOnLine(p1, line))
       result.emplace_back( p1 );
 
-    if (isInsideLine( p2, line))
+    if (isPointOnLine( p2, line))
       result.emplace_back( p2 );
 
-    if (isInsideLine( p3, *this ))
+    if (isPointOnLine( p3, *this ))
       result.emplace_back( p3 );
 
-    if (isInsideLine( p4, *this ))
+    if (isPointOnLine( p4, *this ))
       result.emplace_back( p4 );
 
     return result;
@@ -217,6 +217,48 @@ Line::intersect( Circle& circle )
 
 vector<Point>
 Line::intersect( Multiline& multiline )
+{
+  //...
+}
+
+Multiline::Multiline( vector<Point>& points )
+  : points_ (points)
+{
+ ;
+}
+
+Multiline::~Multiline() = default;
+
+double
+Multiline::length()
+{
+  double result = 0.0;
+  for (int i = 0; i < points_.size() - 1; ++i) {
+    result += Line{points_[i], points_[i+1]}.length();
+  }
+  return result;
+}
+
+vector<Point>
+Multiline::intersect( GeometricFigure& geometricFigure )
+{
+  geometricFigure.intersect( *this );
+}
+
+vector<Point>
+Multiline::intersect( Line& line )
+{
+  //...
+}
+
+vector<Point>
+Multiline::intersect( Circle& )
+{
+  //...
+}
+
+vector<Point>
+Multiline::intersect( Multiline& )
 {
   //...
 }

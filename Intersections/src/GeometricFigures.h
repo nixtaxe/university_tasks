@@ -109,7 +109,7 @@ class Line : public GeometricFigure
 
   private:
     bool
-    isInsideLine( const Point& p, const Line& line ) const;
+    isPointOnLine( const Point& p, const Line& line ) const;
 
     Point start_, end_;
 };
@@ -118,6 +118,13 @@ class Line : public GeometricFigure
 class Multiline : public GeometricFigure
 {
   public:
+    Multiline( vector<Point>& points );
+
+    ~Multiline() override;
+
+    double
+    length();
+
     vector<Point>
     intersect( GeometricFigure& ) override;
 
@@ -129,16 +136,6 @@ class Multiline : public GeometricFigure
 
     vector<Point>
     intersect( Multiline& ) override;
-
-    double
-    length();
-
-    Multiline( vector<Point>& points )
-      : points_( points )
-    {
-    };
-
-    ~Multiline() override = default;
 
   private:
     vector<Point> points_;

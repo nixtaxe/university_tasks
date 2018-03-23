@@ -179,3 +179,15 @@ TEST_CASE( "Line tests", "[]" ) {
     }
   }
 }
+
+TEST_CASE( "Multiline tests", "[]" ) {
+  SECTION( "Check multiline length" ) {
+    vector<Point> v{(Point) {.x = 0.0, .y = 1.0},
+                    (Point) {.x = 1.0, .y = 1.0},
+                    (Point) {.x = 1.0, .y = 0.0},
+                    (Point) {.x = 0.0, .y = 0.0},
+                    (Point) {.x = 0.0, .y = 1.0}};
+    Multiline multiline(v);
+    REQUIRE(abs( multiline.length() - 4.0 ) < EPS);
+  }
+}
