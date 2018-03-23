@@ -59,6 +59,19 @@ TEST_CASE( "Circle tests", "[]" )
         REQUIRE( abs( result[0].y ) < EPS );
       }
     }
+
+    WHEN ( "Line touches a circle" ) {
+      Circle c((Point) {.x = 1.0, .y = 1.0}, 1.0 );
+      Line line((Point) {.x = 0.0, .y = 0.0},
+                (Point) {.x = 0.0, .y = 2.0} );
+
+      THEN ( "Return one point" ) {
+        vector<Point> result = c.intersect( line );
+        REQUIRE( result.size() == 1 );
+        REQUIRE( abs( result[0].x ) < EPS );
+        REQUIRE( abs( result[0].y -1.0 ) < EPS );
+      }
+    }
   }
 }
 
@@ -95,6 +108,19 @@ TEST_CASE( "Line tests", "[]" ) {
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x - 1.0 ) < EPS );
         REQUIRE( abs( result[0].y ) < EPS );
+      }
+    }
+
+    WHEN ( "Line touches a circle" ) {
+      Circle c((Point) {.x = 1.0, .y = 1.0}, 1.0 );
+      Line line((Point) {.x = 0.0, .y = 0.0},
+                (Point) {.x = 0.0, .y = 2.0} );
+
+      THEN ( "Return one point" ) {
+        vector<Point> result = line.intersect( c );
+        REQUIRE( result.size() == 1 );
+        REQUIRE( abs( result[0].x ) < EPS );
+        REQUIRE( abs( result[0].y -1.0 ) < EPS );
       }
     }
   }

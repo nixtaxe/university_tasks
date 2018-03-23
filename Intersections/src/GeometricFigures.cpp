@@ -3,7 +3,7 @@
 //
 
 #define _USE_MATH_DEFINES
-#define EPS 2-16
+#define EPS 2e-16
 
 #include "GeometricFigures.h"
 
@@ -60,7 +60,7 @@ Circle::intersect( Line& line )
   double c = pow( difP1C.x, 2.0 ) + pow( difP1C.y, 2.0 ) - r*r;
 
   double discriminant = b * b - 4.0 * a * c;
-  if (sqrt( discriminant ) < EPS) {
+  if ( abs( discriminant ) <= EPS) {
     double t = -b / (2.0 * a);
     return vector<Point> {{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
   }
@@ -70,8 +70,11 @@ Circle::intersect( Line& line )
     double t1 = (-b + sqrt(discriminant)) / (2.0 * a);
     double t2 = (-b - sqrt(discriminant)) / (2.0 * a);
 
-    if (t2 < 0.0)
+    if (t2 < 0.0 || t2 > 1.0)
       return vector<Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y}};
+
+    if (t1 < 0.0 || t1 > 1.0)
+      return vector<Point> {{p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
 
     return vector<Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y},
                           {p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
