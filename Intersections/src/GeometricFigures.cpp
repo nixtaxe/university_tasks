@@ -9,6 +9,7 @@
 
 #include <cmath>
 #include <algorithm>
+#include <iostream>
 
 using namespace std;
 
@@ -181,7 +182,7 @@ bool
 Line::isPointOnLine( const Point& p, const Line& line ) const
 {
   return p.x >= min( line.getStart().x, line.getEnd().x ) &&
-         p.x <= max( line.getStart().x, line.getEnd().x ) ||
+         p.x <= max( line.getStart().x, line.getEnd().x ) &&
          p.y >= min( line.getStart().y, line.getEnd().y ) &&
          p.y <= max( line.getStart().y, line.getEnd().y );
 }
@@ -197,9 +198,11 @@ Line::intersect( Line& line )
 
   double denominator = ((p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y));
 
-  if (abs( denominator ) < EPS) {
-    vector<Point> result = {};
+  bool areCollinear = (abs((p2.y - p1.y) * p3.x - (p2.x - p1.x) * p3.y + p2.x * p1.y - p2.y * p1.x ) /
+                       this->length()) < EPS;
 
+  vector<Point> result = {};
+  if (areCollinear) {
     if (isPointOnLine( p1, line ))
       result.emplace_back( p1 );
 
@@ -214,6 +217,8 @@ Line::intersect( Line& line )
 
     return result;
   }
+  else if (abs( denominator ) < EPS)
+    return result;
 
   double u1 = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) /
               denominator;
@@ -221,15 +226,16 @@ Line::intersect( Line& line )
   double u2 = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) /
               denominator;
 
-  if (u1 < 0.0 || u1 > 1.0)
+  if (u1 < 0.0 || u1 > 1.0) {
     if (u2 >= 0.0 && u2 <= 1.0)
-      return vector<Point> {(Point) {.x = p3.x + u2 * (p4.x - p3.x),
-        .y = p3.y + u2 * (p4.y - p3.y)}};
-    else
-      return vector<Point> {};
+      result.emplace_back((Point) {.x = p3.x + u2 * (p4.x - p3.x),
+        .y = p3.y + u2 * (p4.y - p3.y)});
+    return result;
+  }
 
-  return vector<Point> {(Point) {.x = p1.x + u1 * (p2.x - p1.x),
-    .y = p1.y + u1 * (p2.y - p1.y)}};
+  result.emplace_back((Point) {.x = p1.x + u1 * (p2.x - p1.x),
+    .y = p1.y + u1 * (p2.y - p1.y)});
+  return result;
 }
 
 vector<Point>
@@ -263,7 +269,7 @@ Multiline::length()
   return result;
 }
 
-void
+vector<Point>
 Multiline::deleteDuplicatePoints( vector<Point>& vector )
 {
   for (int i = 0; i < vector.size() - 1; ++i)
@@ -271,6 +277,7 @@ Multiline::deleteDuplicatePoints( vector<Point>& vector )
       if (abs( vector[i].x - vector[j].x ) < EPS &&
           abs( vector[i].y - vector[j].y ) < EPS)
         vector.erase( vector.begin() + j );
+  return vector;
 }
 
 vector<Point>
@@ -283,12 +290,15 @@ vector<Point>
 Multiline::intersect( Line& line )
 {
   vector<Point> result = {};
-  for (int i = 0; i < this->points_.size(); ++i) {
-    vector<Point> tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( line );
-    result.insert( result.end(), tmp.begin(), tmp.end());
+  vector<Point> tmp = {};
+  for (int i = 0; i < this->points_.size() - 1; ++i) {
+    Line tmpLine = Line( this->points_[i], this->points_[i + 1] );
+    tmp = tmpLine.intersect( line );
+    if (tmp.size() > 0)
+      result.insert( result.end(), tmp.begin(), tmp.end());
   }
 
-  deleteDuplicatePoints( result );
+  result = deleteDuplicatePoints( result );
 
   return result;
 }
@@ -297,12 +307,14 @@ vector<Point>
 Multiline::intersect( Circle& circle )
 {
   vector<Point> result = {};
-  for (int i = 0; i < this->points_.size(); ++i) {
-    vector<Point> tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( circle );
-    result.insert( result.end(), tmp.begin(), tmp.end());
+  vector<Point> tmp = {};
+  for (int i = 0; i < this->points_.size() - 1; ++i) {
+    tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( circle );
+    if (tmp.size() > 0)
+      result.insert( result.end(), tmp.begin(), tmp.end());
   }
 
-  deleteDuplicatePoints( result );
+  result = deleteDuplicatePoints( result );
 
   return result;
 }
@@ -311,13 +323,15 @@ vector<Point>
 Multiline::intersect( Multiline& multiline )
 {
   vector<Point> result = {};
-  for (int i = 0; i < this->points_.size(); ++i) {
-    Line( this->points_[i], this->points_[i + 1] ).intersect( multiline );
-    vector<Point> tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( multiline );
-    result.insert( result.end(), tmp.begin(), tmp.end());
+  vector<Point> tmp = {};
+  for (int i = 0; i < this->points_.size() - 1; ++i) {
+    Line tmpLine = Line( this->points_[i], this->points_[i + 1] );
+    tmp = tmpLine.intersect( multiline );
+    if (tmp.size() > 0)
+      result.insert( result.end(), tmp.begin(), tmp.end());
   }
 
-  deleteDuplicatePoints( result );
+  result = deleteDuplicatePoints( result );
 
   return result;
 }

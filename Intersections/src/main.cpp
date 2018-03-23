@@ -190,6 +190,18 @@ TEST_CASE( "Line tests", "[]" )
         REQUIRE( abs( result[0].y ) < EPS );
       }
     }
+
+    WHEN ( "Lines are parallel" ) {
+      Line line1((Point) {.x = 0.0, .y = 0.0},
+                 (Point) {.x = 0.0, .y = 2.0} );
+      Line line2((Point) {.x = 1.0, .y = -1.0},
+                 (Point) {.x = 1.0, .y = 3.0} );
+
+      THEN ( "Return vector with no points" ) {
+        vector<Point> result = line1.intersect( line2 );
+        REQUIRE( result.size() == 0 );
+      }
+    }
   }
 }
 
@@ -221,26 +233,23 @@ TEST_CASE( "Multiline tests", "[]" )
         REQUIRE( result.size() == 3 );
       }
     }
+  }
 
-    SECTION( "Check multiline-multiline intersection" ) {
+  SECTION( "Check multiline-multiline intersection" ) {
 
-      WHEN( "Multiline intersects multiline in one point" ) {
-        vector<Point> v1 {(Point) {.x = 0.0, .y = 1.0},
-                          (Point) {.x = 1.0, .y = 1.0},
-                          (Point) {.x = 0.0, .y = 2.0},
-                          (Point) {.x = 0.0, .y = 1.0},
-                          (Point) {.x = 0.0, .y = 0.0}};
-        Multiline multiline1( v1 );
-        vector<Point> v2 {(Point) {.x = -1.0, .y = 0.5},
-                          (Point) {.x = 0.5, .y = 0.5}};
-        Multiline multiline2( v2 );
+    WHEN( "Multiline intersects multiline in one point" ) {
+      vector<Point> v1 {(Point) {.x = 0.0, .y = 1.0},
+                        (Point) {.x = 1.0, .y = 1.0}};
+      Multiline multiline1( v1 );
+      vector<Point> v2 {(Point) {.x = 0.5, .y = 1.0},
+                        (Point) {.x = 0.5, .y = 0.5}};
+      Multiline multiline2( v2 );
 
-        THEN( "Return vector with one point" ) {
-          vector<Point> result = multiline1.intersect( multiline2 );
-          REQUIRE( result.size() == 1 );
-          REQUIRE( abs( result[0].x ) < EPS );
-          REQUIRE( abs( result[0].y - 0.5 ) < EPS );
-        }
+      THEN( "Return vector with one point" ) {
+        vector<Point> result = multiline1.intersect( multiline2 );
+        REQUIRE( result.size() == 1 );
+        REQUIRE( abs( result[0].x - 0.5 ) < EPS );
+        REQUIRE( abs( result[0].y - 1.0 ) < EPS );
       }
     }
   }

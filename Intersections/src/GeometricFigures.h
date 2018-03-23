@@ -139,7 +139,7 @@ class Multiline : public GeometricFigure
     intersect( Multiline& ) override;
 
   private:
-    void
+    vector<Point>
     deleteDuplicatePoints( vector<Point>& );
     vector<Point> points_;
 };
