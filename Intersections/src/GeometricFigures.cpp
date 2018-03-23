@@ -94,8 +94,8 @@ Circle::intersect( Circle& circle )
   double maxR = max( r1, r2 );
   double minR = min( r1, r2 );
 
-  bool isTooFar = dist >= (maxR + minR);
-  bool isOneInsideAnother = maxR >= (dist + minR);
+  bool isTooFar = dist > (maxR + minR);
+  bool isOneInsideAnother = maxR > (dist + minR);
   bool isEqual = dist < EPS && (maxR - minR) < EPS;
   if (isTooFar || isOneInsideAnother || isEqual)
     return vector<Point> {};
@@ -111,10 +111,15 @@ Circle::intersect( Circle& circle )
   double deltaY = h * (c2.x - c1.x) / dist;
   double x1 = xh + deltaX;
   double y1 = yh - deltaY;
+
+  if (abs( h ) < EPS)
+    return vector<Point> {(Point) {.x = x1, .y = y1}};
+
   double x2 = xh - deltaX;
   double y2 = yh + deltaY;
 
-  return vector<Point> {{x1, y1}, {x2, y2}};
+  return vector<Point> {(Point) {.x = x1, .y = y1},
+                        (Point) {.x = x2, .y = y2}};
 }
 
 vector<Point>

@@ -29,6 +29,18 @@ TEST_CASE( "Circle tests", "[]" )
         REQUIRE ( abs( result[1].x - 0.5 ) < EPS );
       }
     }
+
+    WHEN ( "Circles have one intersection point" ) {
+      Circle c1((Point) {.x = 0.0, .y = 0.0}, 1.0 );
+      Circle c2((Point) {.x = sqrt( 2.0 ), .y = sqrt( 2.0 )}, 1.0 );
+
+      THEN ( "Return vector with one point" ) {
+        vector<Point> result = c1.intersect( c2 );
+        REQUIRE( result.size() == 1 );
+        REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 ) ) < EPS );
+        REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 ) ) < EPS );
+      }
+    }
   }
 
   SECTION( "Check circle-line intersection" ) {
