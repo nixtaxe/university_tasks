@@ -202,4 +202,22 @@ TEST_CASE( "Multiline tests", "[]" ) {
     Multiline multiline(v);
     REQUIRE(abs( multiline.length() - 4.0 ) < EPS);
   }
+
+  SECTION( "Check multiline-line intersection" ) {
+    WHEN( "Line intersects multiline in multiple similar points" ) {
+      Line line((Point) {.x = 0.0, .y = 0.0},
+                (Point) {.x = 0.0, .y = 2.0});
+      vector<Point> v{(Point) {.x = 0.0, .y = 1.0},
+                      (Point) {.x = 1.0, .y = 1.0},
+                      (Point) {.x = 0.0, .y = 2.0},
+                      (Point) {.x = 0.0, .y = 1.0},
+                      (Point) {.x = 0.0, .y = 0.0}};
+      Multiline multiline(v);
+
+      THEN( "Return vector with original points" ) {
+        vector<Point> result = multiline.intersect( line );
+        REQUIRE(result.size() == 3);
+      }
+    }
+  }
 }

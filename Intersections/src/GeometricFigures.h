@@ -19,6 +19,7 @@ class Multiline;
 struct Point
 {
   double x, y;
+  bool operator() ( Point i, Point j );
 };
 
 

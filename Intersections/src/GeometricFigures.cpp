@@ -8,8 +8,24 @@
 #include "GeometricFigures.h"
 
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
+
+bool
+Point::operator() (Point i, Point j)
+{
+  if (abs( i.x - j.x ) < EPS)
+    return i.y <= j.y;
+
+  if (abs( i.y - j.y ) < EPS)
+    return i.x <= j.x;
+
+  if (i.x <= j.x)
+    return true;
+  else
+    return false;
+}
 
 Circle::Circle( const Point& center, const double& radius )
   : center_( center ), radius_( radius )
@@ -162,10 +178,10 @@ Line::intersect( GeometricFigure& geometricFigure)
 
 bool
 Line::isPointOnLine( const Point& p, const Line& line ) const {
-  return p.x > min( line.getStart().x, line.getEnd().x ) &&
-    p.x < max( line.getStart().x, line.getEnd().x ) ||
-    p.y > min( line.getStart().y, line.getEnd().y ) &&
-    p.y < max( line.getStart().y, line.getEnd().y );
+  return p.x >= min( line.getStart().x, line.getEnd().x ) &&
+    p.x <= max( line.getStart().x, line.getEnd().x ) ||
+    p.y >= min( line.getStart().y, line.getEnd().y ) &&
+    p.y <= max( line.getStart().y, line.getEnd().y );
 }
 
 vector<Point>
@@ -223,7 +239,7 @@ Line::intersect( Circle& circle )
 vector<Point>
 Line::intersect( Multiline& multiline )
 {
-  //...
+  multiline.intersect( *this );
 }
 
 Multiline::Multiline( vector<Point>& points )
@@ -239,7 +255,7 @@ Multiline::length()
 {
   double result = 0.0;
   for (int i = 0; i < points_.size() - 1; ++i) {
-    result += Line{points_[i], points_[i+1]}.length();
+    result += Line{points_[i], points_[i + 1]}.length();
   }
   return result;
 }
@@ -253,7 +269,21 @@ Multiline::intersect( GeometricFigure& geometricFigure )
 vector<Point>
 Multiline::intersect( Line& line )
 {
-  //...
+  vector<Point> result = {};
+  for (int i = 0; i < this->points_.size(); ++i) {
+    vector<Point> tmp = Line(this->points_[i], this->points_[i + 1]).intersect(line);
+    result.insert(result.end(), tmp.begin(), tmp.end());
+  }
+
+  //sort(result.begin(), result.end());
+
+  for (int i = 0; i < result.size() - 1; ++i)
+    for (int j = result.size() - 1; j > i; --j)
+      if (abs( result[i].x - result[j].x ) < EPS &&
+          abs( result[i].y - result[j].y ) < EPS)
+        result.erase(result.begin() + j);
+
+  return result;
 }
 
 vector<Point>
