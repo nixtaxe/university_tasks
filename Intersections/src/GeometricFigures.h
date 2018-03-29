@@ -19,127 +19,127 @@ class Multiline;
 struct Point
 {
   double x, y;
-  bool operator() ( Point i, Point j );
 };
 
 
 class GeometricFigure
 {
-  public:
-    virtual vector<Point>
-    intersect( GeometricFigure& ) = 0;
+public:
+  virtual
+  ~GeometricFigure() = default;
 
-    virtual vector<Point>
-    intersect( Line& ) = 0;
+  virtual double
+  length() const = 0;
 
-    virtual vector<Point>
-    intersect( Circle& ) = 0;
+  virtual vector <Point>
+  intersect(const GeometricFigure&) const = 0;
 
-    virtual vector<Point>
-    intersect( Multiline& ) = 0;
+  virtual vector <Point>
+  intersect(const Line&) const = 0;
 
-    virtual double
-    length() = 0;
+  virtual vector <Point>
+  intersect(const Circle&) const = 0;
 
-    virtual
-    ~GeometricFigure() = default;
+  virtual vector <Point>
+  intersect(const Multiline&) const = 0;
 };
 
 
 class Circle : public GeometricFigure
 {
-  public:
-    Circle( const Point& center, const double& radius );
+public:
+  Circle(const Point& center, double radius);
 
-    ~Circle() override;
+  ~Circle() override;
 
-    Point
-    getCenter() const;
+  Point
+  getCenter() const;
 
-    double
-    getRadius() const;
+  double
+  getRadius() const;
 
-    double
-    length();
+  double
+  length() const override;
 
-    vector<Point>
-    intersect( GeometricFigure& ) override;
+  vector <Point>
+  intersect(const GeometricFigure&) const override;
 
-    vector<Point>
-    intersect( Line& ) override;
+  vector <Point>
+  intersect(const Line&) const override;
 
-    vector<Point>
-    intersect( Circle& ) override;
+  vector <Point>
+  intersect(const Circle&) const override;
 
-    vector<Point>
-    intersect( Multiline& ) override;
+  vector <Point>
+  intersect(const Multiline&) const override;
 
-  private:
-    Point center_;
-    double radius_;
+private:
+  Point center_;
+  double radius_;
 };
 
 
 class Line : public GeometricFigure
 {
-  public:
-    Line( const Point& start, const Point& end );
+public:
+  Line(const Point& start, const Point& end);
 
-    ~Line() override;
+  ~Line() override;
 
-    Point
-    getStart() const;
+  Point
+  getStart() const;
 
-    Point
-    getEnd() const;
+  Point
+  getEnd() const;
 
-    double
-    length();
+  double
+  length() const override;
 
-    vector<Point>
-    intersect( GeometricFigure& ) override;
+  vector <Point>
+  intersect(const GeometricFigure&) const override;
 
-    vector<Point>
-    intersect( Line& ) override;
+  vector <Point>
+  intersect(const Line&) const override;
 
-    vector<Point>
-    intersect( Circle& ) override;
+  vector <Point>
+  intersect(const Circle&) const override;
 
-    vector<Point>
-    intersect( Multiline& ) override;
+  vector <Point>
+  intersect(const Multiline&) const override;
 
-  private:
-    bool
-    isPointOnLine( const Point& p, const Line& line ) const;
+private:
+  bool
+  isPointOnLine(const Point& point, const Line& line) const;
 
-    Point start_, end_;
+  Point start_, end_;
 };
 
 
 class Multiline : public GeometricFigure
 {
-  public:
-    Multiline( vector<Point>& points );
+public:
+  Multiline(const vector <Point>& points);
 
-    ~Multiline() override;
+  ~Multiline() override;
 
-    double
-    length();
+  double
+  length() const override;
 
-    vector<Point>
-    intersect( GeometricFigure& ) override;
+  vector <Point>
+  intersect(const GeometricFigure&) const override;
 
-    vector<Point>
-    intersect( Line& ) override;
+  vector <Point>
+  intersect(const Line&) const override;
 
-    vector<Point>
-    intersect( Circle& ) override;
+  vector <Point>
+  intersect(const Circle&) const override;
 
-    vector<Point>
-    intersect( Multiline& ) override;
+  vector <Point>
+  intersect(const Multiline&) const override;
 
-  private:
-    vector<Point>
-    deleteDuplicatePoints( vector<Point>& );
-    vector<Point> points_;
+private:
+  static vector <Point>
+  deleteDuplicatePoints(vector <Point>&);
+
+  vector <Point> points_;
 };

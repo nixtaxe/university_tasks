@@ -13,23 +13,8 @@
 
 using namespace std;
 
-bool
-Point::operator()( Point i, Point j )
-{
-  if (abs( i.x - j.x ) < EPS)
-    return i.y <= j.y;
-
-  if (abs( i.y - j.y ) < EPS)
-    return i.x <= j.x;
-
-  if (i.x <= j.x)
-    return true;
-  else
-    return false;
-}
-
-Circle::Circle( const Point& center, const double& radius )
-  : center_( center ), radius_( radius )
+Circle::Circle(const Point& center, double radius)
+    : center_( center ), radius_( radius )
 {
   ;
 }
@@ -49,19 +34,19 @@ Circle::getRadius() const
 }
 
 double
-Circle::length()
+Circle::length() const
 {
   return 2.0 * M_PI * radius_;
 }
 
-vector<Point>
-Circle::intersect( GeometricFigure& geometricFigure )
+vector <Point>
+Circle::intersect(const GeometricFigure& geometricFigure) const
 {
   return geometricFigure.intersect( *this );
 }
 
-vector<Point>
-Circle::intersect( Line& line )
+vector <Point>
+Circle::intersect(const Line& line) const
 {
   //http://forum2007.algolist.ru/showflat.php/Cat/0/Number/4825/Main/4781
   double r = this->radius_;
@@ -80,27 +65,27 @@ Circle::intersect( Line& line )
   double discriminant = b * b - 4.0 * a * c;
   if (abs( discriminant ) <= EPS) {
     double t = -b / (2.0 * a);
-    return vector<Point> {{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
+    return vector <Point> {{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
   }
   if (discriminant < 0.0)
-    return vector<Point> {};
+    return vector <Point> {};
   else {
     double t1 = (-b + sqrt( discriminant )) / (2.0 * a);
     double t2 = (-b - sqrt( discriminant )) / (2.0 * a);
 
     if (t2 < 0.0 || t2 > 1.0)
-      return vector<Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y}};
+      return vector <Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y}};
 
     if (t1 < 0.0 || t1 > 1.0)
-      return vector<Point> {{p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
+      return vector <Point> {{p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
 
-    return vector<Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y},
-                          {p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
+    return vector <Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y},
+                           {p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
   }
 }
 
-vector<Point>
-Circle::intersect( Circle& circle )
+vector <Point>
+Circle::intersect(const Circle& circle) const
 {
   Point c1 = this->center_;
   Point c2 = circle.getCenter();
@@ -115,7 +100,7 @@ Circle::intersect( Circle& circle )
   bool isOneInsideAnother = maxR > (dist + minR);
   bool isEqual = dist < EPS && (maxR - minR) < EPS;
   if (isTooFar || isOneInsideAnother || isEqual)
-    return vector<Point> {};
+    return vector <Point> {};
 
   //http://algolist.manual.ru/maths/geom/intersect/circlecircle2d.php
   double a = (pow( r1, 2.0 ) - pow( r2, 2.0 ) + pow( dist, 2.0 )) / (2.0 * dist);
@@ -130,24 +115,24 @@ Circle::intersect( Circle& circle )
   double y1 = yh - deltaY;
 
   if (abs( h ) < EPS)
-    return vector<Point> {(Point) {.x = x1, .y = y1}};
+    return vector <Point> {(Point) {.x = x1, .y = y1}};
 
   double x2 = xh - deltaX;
   double y2 = yh + deltaY;
 
-  return vector<Point> {(Point) {.x = x1, .y = y1},
-                        (Point) {.x = x2, .y = y2}};
+  return vector <Point> {(Point) {.x = x1, .y = y1},
+                         (Point) {.x = x2, .y = y2}};
 }
 
-vector<Point>
-Circle::intersect( Multiline& multiLine )
+vector <Point>
+Circle::intersect(const Multiline& multiLine) const
 {
-  multiLine.intersect( *this );
+  return multiLine.intersect( *this );
 }
 
 
-Line::Line( const Point& start, const Point& end )
-  : start_( start ), end_( end )
+Line::Line(const Point& start, const Point& end)
+    : start_( start ), end_( end )
 {
   ;
 }
@@ -167,19 +152,19 @@ Line::getEnd() const
 }
 
 double
-Line::length()
+Line::length() const
 {
   return sqrt( pow( start_.x - end_.x, 2.0 ) + pow( start_.y - end_.y, 2.0 ));
 }
 
-vector<Point>
-Line::intersect( GeometricFigure& geometricFigure )
+vector <Point>
+Line::intersect(const GeometricFigure& geometricFigure) const
 {
   return geometricFigure.intersect( *this );
 }
 
 bool
-Line::isPointOnLine( const Point& p, const Line& line ) const
+Line::isPointOnLine(const Point& p, const Line& line) const
 {
   return p.x >= min( line.getStart().x, line.getEnd().x ) &&
          p.x <= max( line.getStart().x, line.getEnd().x ) &&
@@ -187,8 +172,8 @@ Line::isPointOnLine( const Point& p, const Line& line ) const
          p.y <= max( line.getStart().y, line.getEnd().y );
 }
 
-vector<Point>
-Line::intersect( Line& line )
+vector <Point>
+Line::intersect(const Line& line) const
 {
   //http://algolist.manual.ru/maths/geom/intersect/lineline2d.php
   Point p1 = this->start_;
@@ -201,23 +186,22 @@ Line::intersect( Line& line )
   bool areCollinear = (abs((p2.y - p1.y) * p3.x - (p2.x - p1.x) * p3.y + p2.x * p1.y - p2.y * p1.x ) /
                        this->length()) < EPS;
 
-  vector<Point> result = {};
+  vector <Point> result;
   if (areCollinear) {
     if (isPointOnLine( p1, line ))
-      result.emplace_back( p1 );
+      result.push_back( p1 );
 
     if (isPointOnLine( p2, line ))
-      result.emplace_back( p2 );
+      result.push_back( p2 );
 
     if (isPointOnLine( p3, *this ))
-      result.emplace_back( p3 );
+      result.push_back( p3 );
 
     if (isPointOnLine( p4, *this ))
-      result.emplace_back( p4 );
+      result.push_back( p4 );
 
     return result;
-  }
-  else if (abs( denominator ) < EPS)
+  } else if (abs( denominator ) < EPS)
     return result;
 
   double u1 = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) /
@@ -228,31 +212,31 @@ Line::intersect( Line& line )
 
   if (u1 < 0.0 || u1 > 1.0) {
     if (u2 >= 0.0 && u2 <= 1.0)
-      result.emplace_back((Point) {.x = p3.x + u2 * (p4.x - p3.x),
-        .y = p3.y + u2 * (p4.y - p3.y)});
+      result.push_back((Point) {.x = p3.x + u2 * (p4.x - p3.x),
+          .y = p3.y + u2 * (p4.y - p3.y)} );
     return result;
   }
 
-  result.emplace_back((Point) {.x = p1.x + u1 * (p2.x - p1.x),
-    .y = p1.y + u1 * (p2.y - p1.y)});
+  result.push_back((Point) {.x = p1.x + u1 * (p2.x - p1.x),
+      .y = p1.y + u1 * (p2.y - p1.y)} );
   return result;
 }
 
-vector<Point>
-Line::intersect( Circle& circle )
+vector <Point>
+Line::intersect(const Circle& circle) const
 {
   return circle.intersect( *this );
 }
 
-vector<Point>
-Line::intersect( Multiline& multiline )
+vector <Point>
+Line::intersect(const Multiline& multiline) const
 {
-  multiline.intersect( *this );
+  return multiline.intersect( *this );
 }
 
 
-Multiline::Multiline( vector<Point>& points )
-  : points_( points )
+Multiline::Multiline(const vector <Point>& points)
+    : points_( points )
 {
   ;
 }
@@ -260,7 +244,7 @@ Multiline::Multiline( vector<Point>& points )
 Multiline::~Multiline() = default;
 
 double
-Multiline::length()
+Multiline::length() const
 {
   double result = 0.0;
   for (int i = 0; i < points_.size() - 1; ++i) {
@@ -269,69 +253,78 @@ Multiline::length()
   return result;
 }
 
-vector<Point>
-Multiline::deleteDuplicatePoints( vector<Point>& vector )
+vector <Point>
+Multiline::deleteDuplicatePoints(vector <Point>& vec)
 {
-  for (int i = 0; i < vector.size() - 1; ++i)
-    for (int j = vector.size() - 1; j > i; --j)
-      if (abs( vector[i].x - vector[j].x ) < EPS &&
-          abs( vector[i].y - vector[j].y ) < EPS)
-        vector.erase( vector.begin() + j );
-  return vector;
+  for (auto i = 0; i < vec.size(); ++i)
+    for (auto j = i + 1; j < vec.size();)
+      if (abs(vec[i].x - vec[j].x) < EPS &&
+          abs(vec[i].y - vec[j].y) < EPS) {
+        vec[j] = vec.back();
+        vec.pop_back();
+      } else {
+        ++j;
+      }
 }
 
-vector<Point>
-Multiline::intersect( GeometricFigure& geometricFigure )
+vector <Point>
+Multiline::intersect(const GeometricFigure& geometricFigure) const
 {
-  geometricFigure.intersect( *this );
+  return geometricFigure.intersect( *this );
 }
 
-vector<Point>
-Multiline::intersect( Line& line )
+vector <Point>
+Multiline::intersect(const Line& line) const
 {
-  vector<Point> result = {};
-  vector<Point> tmp = {};
+  vector <Point> result;
+  vector <Point> tmp;
   for (int i = 0; i < this->points_.size() - 1; ++i) {
     Line tmpLine = Line( this->points_[i], this->points_[i + 1] );
     tmp = tmpLine.intersect( line );
-    if (tmp.size() > 0)
-      result.insert( result.end(), tmp.begin(), tmp.end());
+    if (!tmp.empty()) {
+      //result.insert( result.end(), tmp.begin(), tmp.end());
+      for (auto it: tmp) result.push_back(it);
+    }
   }
 
-  result = deleteDuplicatePoints( result );
+  deleteDuplicatePoints( result );
 
   return result;
 }
 
-vector<Point>
-Multiline::intersect( Circle& circle )
+vector <Point>
+Multiline::intersect(const Circle& circle) const
 {
-  vector<Point> result = {};
-  vector<Point> tmp = {};
+  vector <Point> result;
+  vector <Point> tmp;
   for (int i = 0; i < this->points_.size() - 1; ++i) {
     tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( circle );
-    if (tmp.size() > 0)
-      result.insert( result.end(), tmp.begin(), tmp.end());
+    if (!tmp.empty())
+      //result.insert( result.end(), tmp.begin(), tmp.end());
+      for (auto it: tmp) result.push_back(it);
   }
 
-  result = deleteDuplicatePoints( result );
+  deleteDuplicatePoints( result );
 
   return result;
 }
 
-vector<Point>
-Multiline::intersect( Multiline& multiline )
+vector <Point>
+Multiline::intersect(const Multiline& multiline) const
 {
-  vector<Point> result = {};
-  vector<Point> tmp = {};
+  vector <Point> result;
+  vector <Point> tmp;
   for (int i = 0; i < this->points_.size() - 1; ++i) {
-    Line tmpLine = Line( this->points_[i], this->points_[i + 1] );
+    Line tmpLine( this->points_[i], this->points_[i + 1] );
     tmp = tmpLine.intersect( multiline );
-    if (tmp.size() > 0)
-      result.insert( result.end(), tmp.begin(), tmp.end());
+    if (!tmp.empty()) {
+      //valgrind
+      //result.insert( result.end(), tmp.begin(), tmp.end());
+      for (auto it: tmp) result.push_back(it);
+    }
   }
 
-  result = deleteDuplicatePoints( result );
+  deleteDuplicatePoints( result );
 
   return result;
 }

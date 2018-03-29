@@ -241,7 +241,7 @@ TEST_CASE( "Multiline tests", "[]" )
       vector<Point> v1 {(Point) {.x = 0.0, .y = 1.0},
                         (Point) {.x = 1.0, .y = 1.0}};
       Multiline multiline1( v1 );
-      vector<Point> v2 {(Point) {.x = 0.5, .y = 1.0},
+      vector<Point> v2 {(Point) {.x = 0.5, .y = 2.0},
                         (Point) {.x = 0.5, .y = 0.5}};
       Multiline multiline2( v2 );
 
