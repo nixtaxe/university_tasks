@@ -191,6 +191,18 @@ TEST_CASE( "Line tests", "[]" )
       }
     }
 
+    WHEN ( "Lines are not collinear and are not intersecting" ) {
+      Line line1((Point) {.x = 4.0, .y = 0.0},
+                 (Point) {.x = 0.0, .y = 2.0} );
+      Line line2((Point) {.x = 0.0, .y = 0.0},
+                 (Point) {.x = 0.0, .y = 1.0} );
+
+      THEN ( "Return vector with no points" ) {
+        vector<Point> result = line1.intersect( line2 );
+        REQUIRE( result.size() == 0 );
+      }
+    }
+
     WHEN ( "Lines are parallel" ) {
       Line line1((Point) {.x = 0.0, .y = 0.0},
                  (Point) {.x = 0.0, .y = 2.0} );
@@ -231,6 +243,22 @@ TEST_CASE( "Multiline tests", "[]" )
       THEN( "Return vector with original points" ) {
         vector<Point> result = multiline.intersect( line );
         REQUIRE( result.size() == 3 );
+      }
+    }
+
+    WHEN( "Line is not intersecting multiline" ) {
+      Line line((Point) {.x = -1.0, .y = -1.0},
+                (Point) {.x = -1.0, .y = 2.0} );
+      vector<Point> v {(Point) {.x = 0.0, .y = 1.0},
+                       (Point) {.x = 1.0, .y = 1.0},
+                       (Point) {.x = 0.0, .y = 2.0},
+                       (Point) {.x = 0.0, .y = 1.0},
+                       (Point) {.x = 0.0, .y = 0.0}};
+      Multiline multiline( v );
+
+      THEN( "Return vector no points" ) {
+        vector<Point> result = multiline.intersect( line );
+        REQUIRE( result.size() == 0 );
       }
     }
   }

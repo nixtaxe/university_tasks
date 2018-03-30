@@ -210,12 +210,8 @@ Line::intersect(const Line& line) const
   double u2 = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) /
               denominator;
 
-  if (u1 < 0.0 || u1 > 1.0) {
-    if (u2 >= 0.0 && u2 <= 1.0)
-      result.push_back((Point) {.x = p3.x + u2 * (p4.x - p3.x),
-          .y = p3.y + u2 * (p4.y - p3.y)} );
+  if (u1 < 0.0 || u1 > 1.0 || u2 < 0.0 || u2 > 1.0)
     return result;
-  }
 
   result.push_back((Point) {.x = p1.x + u1 * (p2.x - p1.x),
       .y = p1.y + u1 * (p2.y - p1.y)} );
@@ -281,10 +277,8 @@ Multiline::intersect(const Line& line) const
   for (int i = 0; i < this->points_.size() - 1; ++i) {
     Line tmpLine = Line( this->points_[i], this->points_[i + 1] );
     tmp = tmpLine.intersect( line );
-    if (!tmp.empty()) {
-      //result.insert( result.end(), tmp.begin(), tmp.end());
-      for (auto it: tmp) result.push_back(it);
-    }
+    for (auto it: tmp)
+      result.push_back(it);
   }
 
   deleteDuplicatePoints( result );
@@ -299,9 +293,8 @@ Multiline::intersect(const Circle& circle) const
   vector <Point> tmp;
   for (int i = 0; i < this->points_.size() - 1; ++i) {
     tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( circle );
-    if (!tmp.empty())
-      //result.insert( result.end(), tmp.begin(), tmp.end());
-      for (auto it: tmp) result.push_back(it);
+    for (auto it: tmp)
+      result.push_back(it);
   }
 
   deleteDuplicatePoints( result );
@@ -317,11 +310,8 @@ Multiline::intersect(const Multiline& multiline) const
   for (int i = 0; i < this->points_.size() - 1; ++i) {
     Line tmpLine( this->points_[i], this->points_[i + 1] );
     tmp = tmpLine.intersect( multiline );
-    if (!tmp.empty()) {
-      //valgrind
-      //result.insert( result.end(), tmp.begin(), tmp.end());
-      for (auto it: tmp) result.push_back(it);
-    }
+    for (auto it: tmp)
+      result.push_back(it);
   }
 
   deleteDuplicatePoints( result );
