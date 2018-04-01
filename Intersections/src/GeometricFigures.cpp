@@ -261,6 +261,7 @@ Multiline::deleteDuplicatePoints(vector <Point>& vec)
       } else {
         ++j;
       }
+  return vec;
 }
 
 vector <Point>
@@ -281,9 +282,7 @@ Multiline::intersect(const Line& line) const
       result.push_back(it);
   }
 
-  deleteDuplicatePoints( result );
-
-  return result;
+  return deleteDuplicatePoints( result );
 }
 
 vector <Point>
@@ -297,9 +296,7 @@ Multiline::intersect(const Circle& circle) const
       result.push_back(it);
   }
 
-  deleteDuplicatePoints( result );
-
-  return result;
+  return deleteDuplicatePoints( result );
 }
 
 vector <Point>
@@ -314,7 +311,5 @@ Multiline::intersect(const Multiline& multiline) const
       result.push_back(it);
   }
 
-  deleteDuplicatePoints( result );
-
-  return result;
+  return deleteDuplicatePoints( result );
 }
