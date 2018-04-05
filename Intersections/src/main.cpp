@@ -17,6 +17,7 @@ TEST_CASE( "Circle tests", "[]" )
   }
 
   SECTION( "Check circle-circle intersection" ) {
+
     WHEN ( "Circles have two intersection points" ) {
       Circle c1((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Circle c2((Point) {.x = 1.0, .y = 0.0}, 1.0 );
@@ -53,6 +54,7 @@ TEST_CASE( "Circle tests", "[]" )
   }
 
   SECTION( "Check circle-line intersection" ) {
+
     WHEN ( "Circle intersects line in two points" ) {
       Circle circle((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Line line((Point) {.x = -1.0, .y = 2.0},
@@ -101,7 +103,7 @@ TEST_CASE( "Circle tests", "[]" )
 
       THEN ( "Return empty vector" ) {
         vector<Point> result = circle.intersect( line );
-        REQUIRE( result.size() == 0 );
+        REQUIRE( result.empty() );
       }
     }
   }
@@ -116,6 +118,7 @@ TEST_CASE( "Line tests", "[]" )
   }
 
   SECTION( "Check line-circle intersection" ) {
+
     WHEN ( "Line intersects circle in two points" ) {
       Circle circle((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Line line((Point) {.x = -1.0, .y = 2.0},
@@ -164,12 +167,13 @@ TEST_CASE( "Line tests", "[]" )
 
       THEN ( "Return empty vector" ) {
         vector<Point> result = line.intersect( circle );
-        REQUIRE( result.size() == 0 );
+        REQUIRE( result.empty() );
       }
     }
   }
 
   SECTION ( "Check line-line intersection" ) {
+
     WHEN ( "Lines are not collinear and are intersecting" ) {
       Line line1((Point) {.x = 0.0, .y = 0.0},
                  (Point) {.x = 0.0, .y = 2.0} );
@@ -208,7 +212,7 @@ TEST_CASE( "Line tests", "[]" )
 
       THEN ( "Return vector with no points" ) {
         vector<Point> result = line1.intersect( line2 );
-        REQUIRE( result.size() == 0 );
+        REQUIRE( result.empty() );
       }
     }
 
@@ -220,7 +224,7 @@ TEST_CASE( "Line tests", "[]" )
 
       THEN ( "Return vector with no points" ) {
         vector<Point> result = line1.intersect( line2 );
-        REQUIRE( result.size() == 0 );
+        REQUIRE( result.empty() );
       }
     }
   }
@@ -239,6 +243,7 @@ TEST_CASE( "Multiline tests", "[]" )
   }
 
   SECTION( "Check multiline-line intersection" ) {
+
     WHEN( "Line intersects multiline in multiple similar points" ) {
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
@@ -335,5 +340,31 @@ TEST_CASE( "Multiline tests", "[]" )
         REQUIRE( result.empty() );
       }
     }
+  }
+}
+
+TEST_CASE( "Vector of geometric figures tests", "[]" )
+{
+  SECTION( "Check intersection of vector with circles and vector with lines" ) {
+    vector <GeometricFigure*> v1;
+    for (double i = 0.0; i <= 6.0; i += 2.0)
+      v1.push_back(new Circle((Point){.x = i, .y = 0.0}, 1.0));
+
+    vector <GeometricFigure*> v2;
+    for (double i = 0.0; i <= 6.0; i += 2.0)
+      v2.push_back(new Line((Point) {.x = i, .y = 0.5},
+                            (Point) {.x = i, .y = 1.0}));
+
+    vector<Point> result;
+    vector<Point> aVector;
+    for (auto i = 0; i < v1.size(); ++i)
+      for (auto j = 0; j < v2.size(); ++j) {
+        aVector = v1[i]->intersect( *v2[j] );
+        for (auto it : aVector)
+           result.push_back(it);
+    }
+
+    REQUIRE( result.size() == 4 );
+
   }
 }
