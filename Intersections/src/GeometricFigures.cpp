@@ -2,14 +2,12 @@
 // Created by nixtaxe on 28.02.2018.
 //
 
-#define _USE_MATH_DEFINES
 #define EPS 2e-16
 
 #include "GeometricFigures.h"
 
 #include <cmath>
 #include <algorithm>
-#include <iostream>
 #include <set>
 
 using namespace std;
@@ -83,14 +81,14 @@ Circle::intersect(const Line& line) const
     double t1 = (-b + sqrt( discriminant )) / (2.0 * a);
     double t2 = (-b - sqrt( discriminant )) / (2.0 * a);
 
-    if (t2 < 0.0 || t2 > 1.0)
-      return vector <Point>{{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y}};
+    vector <Point> result;
+    if (t1 >= 0.0 && t1 <= 1.0)
+      result.push_back((Point){p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y});
 
-    if (t1 < 0.0 || t1 > 1.0)
-      return vector <Point>{{p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
+    if (t2 >= 0.0 && t2 <= 1.0)
+      result.push_back((Point){p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y});
 
-    return vector <Point>{{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y},
-                          {p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
+    return result;
   }
 }
 
@@ -191,10 +189,12 @@ Line::intersect(const Line& line) const
   Point p3 = line.getStart();
   Point p4 = line.getEnd();
 
-  double denominator = ((p4.y - p3.y) * (p2.x - p1.x) - (p4.x - p3.x) * (p2.y - p1.y));
+  double denominator = ((p4.y - p3.y) * (p2.x - p1.x) -
+                        (p4.x - p3.x) * (p2.y - p1.y));
 
-  bool areCollinear = (abs((p2.y - p1.y) * p3.x - (p2.x - p1.x) * p3.y + p2.x * p1.y - p2.y * p1.x ) /
-                       this->length()) < EPS;
+  bool areCollinear = (abs((p2.y - p1.y) * p3.x - (p2.x - p1.x) * p3.y +
+                           p2.x * p1.y - p2.y * p1.x ) /
+                           this->length()) < EPS;
 
   vector <Point> result;
   if (areCollinear) {
@@ -212,13 +212,15 @@ Line::intersect(const Line& line) const
 
     return result;
   } else if (abs( denominator ) < EPS)
-    return {};
+    return vector <Point>{};
 
-  double u1 = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) /
-              denominator;
+  double u1 = ((p4.x - p3.x) * (p1.y - p3.y) -
+               (p4.y - p3.y) * (p1.x - p3.x)) /
+               denominator;
 
-  double u2 = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) /
-              denominator;
+  double u2 = ((p2.x - p1.x) * (p1.y - p3.y) -
+               (p2.y - p1.y) * (p1.x - p3.x)) /
+               denominator;
 
   if (u1 >= 0.0 && u1 <= 1.0 && u2 >= 0.0 && u2 <= 1.0) {
     Point p = {.x = p1.x + u1 * (p2.x - p1.x),

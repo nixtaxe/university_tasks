@@ -3,7 +3,6 @@
 //
 
 #define CATCH_CONFIG_MAIN
-#define _USE_MATH_DEFINES
 #define EPS 2e-16
 
 #include <cmath>
@@ -45,12 +44,12 @@ TEST_CASE( "Circle tests", "[]" )
 
   SECTION( "Check circle-line intersection" ) {
     WHEN ( "Circle intersects line in two points" ) {
-      Circle c((Point) {.x = 0.0, .y = 0.0}, 1.0 );
+      Circle circle((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Line line((Point) {.x = -1.0, .y = 2.0},
                 (Point) {.x = 2.0, .y = -1.0} );
 
       THEN ( "Return vector with two points" ) {
-        vector<Point> result = c.intersect( line );
+        vector<Point> result = circle.intersect( line );
         REQUIRE( result.size() == 2 );
         REQUIRE( abs( result[1].x ) < EPS );
         REQUIRE( abs( result[1].y - 1.0 ) < EPS );
@@ -60,12 +59,12 @@ TEST_CASE( "Circle tests", "[]" )
     }
 
     WHEN ( "Circle intersects line in one point" ) {
-      Circle c((Point) {.x = 0.0, .y = 0.0}, 1.0 );
+      Circle circle((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 2.0, .y = 0.0} );
 
       THEN ( "Return vector with one point" ) {
-        vector<Point> result = c.intersect( line );
+        vector<Point> result = circle.intersect( line );
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x - 1.0 ) < EPS );
         REQUIRE( abs( result[0].y ) < EPS );
@@ -73,12 +72,12 @@ TEST_CASE( "Circle tests", "[]" )
     }
 
     WHEN ( "Line touches a circle" ) {
-      Circle c((Point) {.x = 1.0, .y = 1.0}, 1.0 );
+      Circle circle((Point) {.x = 1.0, .y = 1.0}, 1.0 );
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
 
       THEN ( "Return one point" ) {
-        vector<Point> result = c.intersect( line );
+        vector<Point> result = circle.intersect( line );
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x ) < EPS );
         REQUIRE( abs( result[0].y - 1.0 ) < EPS );
@@ -86,12 +85,12 @@ TEST_CASE( "Circle tests", "[]" )
     }
 
     WHEN ( "No intersection" ) {
-      Circle c((Point) {.x = 1.0, .y = 1.0}, 1.0 );
+      Circle circle((Point) {.x = 1.0, .y = 1.0}, 1.0 );
       Line line((Point) {.x = -1.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
 
       THEN ( "Return empty vector" ) {
-        vector<Point> result = c.intersect( line );
+        vector<Point> result = circle.intersect( line );
         REQUIRE( result.size() == 0 );
       }
     }
@@ -108,12 +107,12 @@ TEST_CASE( "Line tests", "[]" )
 
   SECTION( "Check line-circle intersection" ) {
     WHEN ( "Line intersects circle in two points" ) {
-      Circle c((Point) {.x = 0.0, .y = 0.0}, 1.0 );
+      Circle circle((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Line line((Point) {.x = -1.0, .y = 2.0},
                 (Point) {.x = 2.0, .y = -1.0} );
 
       THEN ( "Return vector with two points" ) {
-        vector<Point> result = line.intersect( c );
+        vector<Point> result = line.intersect( circle );
         REQUIRE( result.size() == 2 );
         REQUIRE( abs( result[1].x ) < EPS );
         REQUIRE( abs( result[1].y - 1.0 ) < EPS );
@@ -123,12 +122,12 @@ TEST_CASE( "Line tests", "[]" )
     }
 
     WHEN ( "Line intersects circle in one point" ) {
-      Circle c((Point) {.x = 0.0, .y = 0.0}, 1.0 );
+      Circle circle((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 2.0, .y = 0.0} );
 
       THEN ( "Return vector with one point" ) {
-        vector<Point> result = line.intersect( c );
+        vector<Point> result = line.intersect( circle );
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x - 1.0 ) < EPS );
         REQUIRE( abs( result[0].y ) < EPS );
@@ -136,12 +135,12 @@ TEST_CASE( "Line tests", "[]" )
     }
 
     WHEN ( "Line touches a circle" ) {
-      Circle c((Point) {.x = 1.0, .y = 1.0}, 1.0 );
+      Circle circle((Point) {.x = 1.0, .y = 1.0}, 1.0 );
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
 
       THEN ( "Return vector with one point" ) {
-        vector<Point> result = line.intersect( c );
+        vector<Point> result = line.intersect( circle );
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x ) < EPS );
         REQUIRE( abs( result[0].y - 1.0 ) < EPS );
@@ -149,12 +148,12 @@ TEST_CASE( "Line tests", "[]" )
     }
 
     WHEN ( "No intersection" ) {
-      Circle c((Point) {.x = 1.0, .y = 1.0}, 1.0 );
+      Circle circle((Point) {.x = 1.0, .y = 1.0}, 1.0 );
       Line line((Point) {.x = -1.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
 
       THEN ( "Return empty vector" ) {
-        vector<Point> result = line.intersect( c );
+        vector<Point> result = line.intersect( circle );
         REQUIRE( result.size() == 0 );
       }
     }
@@ -258,7 +257,7 @@ TEST_CASE( "Multiline tests", "[]" )
 
       THEN( "Return vector no points" ) {
         vector<Point> result = multiline.intersect( line );
-        REQUIRE( result.size() == 0 );
+        REQUIRE( result.empty() );
       }
     }
   }
@@ -278,6 +277,52 @@ TEST_CASE( "Multiline tests", "[]" )
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x - 0.5 ) < EPS );
         REQUIRE( abs( result[0].y - 1.0 ) < EPS );
+      }
+    }
+
+    WHEN( "Multiline is not intersecting multiline" ) {
+      vector<Point> v1 {(Point) {.x = 1.0, .y = 1.0},
+                        (Point) {.x = 2.0, .y = 2.0},
+                        (Point) {.x = 3.0, .y = 3.0}};
+      Multiline multiline1( v1 );
+      vector<Point> v2 {(Point) {.x = 0.5, .y = 1.0},
+                        (Point) {.x = 0.5, .y = 0.5},
+                        (Point) {.x = 0.5, .y = 0.0}};
+      Multiline multiline2( v2 );
+
+      THEN( "Return vector with no points" ) {
+        vector<Point> result = multiline1.intersect( multiline2 );
+        REQUIRE( result.empty() );
+      }
+    }
+  }
+
+  SECTION( "Check multiline-cirlce intersection" ) {
+
+    WHEN( "Multiline intersects circle in multiple points" ) {
+      vector<Point> v1 {(Point) {.x = -1.0, .y = 0.0},
+                        (Point) {.x = 0.0, .y = 1.0},
+                        (Point) {.x = 1.0, .y = 0.0},
+                        (Point) {.x = 0.0, .y = -1.0}};
+      Multiline multiline1( v1 );
+      Circle circle( (Point) {.x = 0.0, .y = 0.0}, 1.0);
+
+      THEN( "Return vector with one point" ) {
+        vector<Point> result = multiline1.intersect( circle );
+        REQUIRE( result.size() == 4 );
+      }
+    }
+
+    WHEN( "Multiline is not intersecting circle" ) {
+      vector<Point> v1 {(Point) {.x = 1.0, .y = 1.0},
+                        (Point) {.x = 2.0, .y = 2.0},
+                        (Point) {.x = 3.0, .y = 3.0}};
+      Multiline multiline1( v1 );
+      Circle circle( (Point) {.x = -1.0, .y = 0.0}, 1.0 );
+
+      THEN( "Return vector with no points" ) {
+        vector<Point> result = multiline1.intersect( circle );
+        REQUIRE( result.empty() );
       }
     }
   }
