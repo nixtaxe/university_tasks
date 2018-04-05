@@ -40,6 +40,16 @@ TEST_CASE( "Circle tests", "[]" )
         REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 )) < EPS );
       }
     }
+
+    WHEN ( "Circles have no intersection points" ) {
+      Circle c1((Point) {.x = 0.0, .y = 0.0}, 1.0 );
+      Circle c2((Point) {.x = 3.0, .y = 0.0}, 1.0 );
+
+      THEN ( "Return vector with no points" ) {
+        vector<Point> result = c1.intersect( c2 );
+        REQUIRE( result.empty() );
+      }
+    }
   }
 
   SECTION( "Check circle-line intersection" ) {
