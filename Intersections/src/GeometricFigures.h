@@ -21,6 +21,7 @@ struct Point
   double x, y;
 };
 
+bool operator <(const Point& a, const Point& b);
 
 class GeometricFigure
 {
@@ -138,8 +139,5 @@ public:
   intersect(const Multiline&) const override;
 
 private:
-  static vector <Point>
-  deleteDuplicatePoints(vector <Point>&);
-
   vector <Point> points_;
 };

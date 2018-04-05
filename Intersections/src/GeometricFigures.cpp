@@ -10,8 +10,18 @@
 #include <cmath>
 #include <algorithm>
 #include <iostream>
+#include <set>
 
 using namespace std;
+
+bool
+operator<(const Point& a, const Point& b)
+{
+  if (abs( a.x - b.x ) < EPS)
+    return a.y > b.y;
+  else
+    return a.x < b.x;
+}
 
 Circle::Circle(const Point& center, double radius)
     : center_( center ), radius_( radius )
@@ -65,22 +75,22 @@ Circle::intersect(const Line& line) const
   double discriminant = b * b - 4.0 * a * c;
   if (abs( discriminant ) <= EPS) {
     double t = -b / (2.0 * a);
-    return vector <Point> {{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
+    return vector <Point>{{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
   }
   if (discriminant < 0.0)
-    return vector <Point> {};
+    return vector <Point>{};
   else {
     double t1 = (-b + sqrt( discriminant )) / (2.0 * a);
     double t2 = (-b - sqrt( discriminant )) / (2.0 * a);
 
     if (t2 < 0.0 || t2 > 1.0)
-      return vector <Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y}};
+      return vector <Point>{{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y}};
 
     if (t1 < 0.0 || t1 > 1.0)
-      return vector <Point> {{p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
+      return vector <Point>{{p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
 
-    return vector <Point> {{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y},
-                           {p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
+    return vector <Point>{{p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y},
+                          {p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y}};
   }
 }
 
@@ -100,7 +110,7 @@ Circle::intersect(const Circle& circle) const
   bool isOneInsideAnother = maxR > (dist + minR);
   bool isEqual = dist < EPS && (maxR - minR) < EPS;
   if (isTooFar || isOneInsideAnother || isEqual)
-    return vector <Point> {};
+    return vector <Point>{};
 
   //http://algolist.manual.ru/maths/geom/intersect/circlecircle2d.php
   double a = (pow( r1, 2.0 ) - pow( r2, 2.0 ) + pow( dist, 2.0 )) / (2.0 * dist);
@@ -115,13 +125,13 @@ Circle::intersect(const Circle& circle) const
   double y1 = yh - deltaY;
 
   if (abs( h ) < EPS)
-    return vector <Point> {(Point) {.x = x1, .y = y1}};
+    return vector <Point>{(Point) {.x = x1, .y = y1}};
 
   double x2 = xh - deltaX;
   double y2 = yh + deltaY;
 
-  return vector <Point> {(Point) {.x = x1, .y = y1},
-                         (Point) {.x = x2, .y = y2}};
+  return vector <Point>{(Point) {.x = x1, .y = y1},
+                        (Point) {.x = x2, .y = y2}};
 }
 
 vector <Point>
@@ -202,7 +212,7 @@ Line::intersect(const Line& line) const
 
     return result;
   } else if (abs( denominator ) < EPS)
-    return result;
+    return {};
 
   double u1 = ((p4.x - p3.x) * (p1.y - p3.y) - (p4.y - p3.y) * (p1.x - p3.x)) /
               denominator;
@@ -210,11 +220,12 @@ Line::intersect(const Line& line) const
   double u2 = ((p2.x - p1.x) * (p1.y - p3.y) - (p2.y - p1.y) * (p1.x - p3.x)) /
               denominator;
 
-  if (u1 < 0.0 || u1 > 1.0 || u2 < 0.0 || u2 > 1.0)
-    return result;
+  if (u1 >= 0.0 && u1 <= 1.0 && u2 >= 0.0 && u2 <= 1.0) {
+    Point p = {.x = p1.x + u1 * (p2.x - p1.x),
+               .y = p1.y + u1 * (p2.y - p1.y)};
+    result.push_back( p );
+  }
 
-  result.push_back((Point) {.x = p1.x + u1 * (p2.x - p1.x),
-      .y = p1.y + u1 * (p2.y - p1.y)} );
   return result;
 }
 
@@ -250,66 +261,41 @@ Multiline::length() const
 }
 
 vector <Point>
-Multiline::deleteDuplicatePoints(vector <Point>& vec)
-{
-  for (auto i = 0; i < vec.size(); ++i)
-    for (auto j = i + 1; j < vec.size();)
-      if (abs(vec[i].x - vec[j].x) < EPS &&
-          abs(vec[i].y - vec[j].y) < EPS) {
-        vec[j] = vec.back();
-        vec.pop_back();
-      } else {
-        ++j;
-      }
-  return vec;
-}
-
-vector <Point>
 Multiline::intersect(const GeometricFigure& geometricFigure) const
 {
-  return geometricFigure.intersect( *this );
+  set <Point> result;
+  vector <Point> aVector;
+  for (int i = 0; i < this->points_.size() - 1; ++i) {
+    Line aLine = Line( this->points_[i], this->points_[i + 1] );
+    aVector = aLine.intersect( geometricFigure );
+    result.insert( aVector.begin(), aVector.end());
+  }
+
+  return vector <Point>{result.begin(), result.end()};
 }
 
 vector <Point>
 Multiline::intersect(const Line& line) const
 {
-  vector <Point> result;
-  vector <Point> tmp;
+  set <Point> result;
+  vector <Point> aVector;
   for (int i = 0; i < this->points_.size() - 1; ++i) {
-    Line tmpLine = Line( this->points_[i], this->points_[i + 1] );
-    tmp = tmpLine.intersect( line );
-    for (auto it: tmp)
-      result.push_back(it);
+    Line aLine = Line( this->points_[i], this->points_[i + 1] );
+    aVector = aLine.intersect( line );
+    result.insert( aVector.begin(), aVector.end());
   }
 
-  return deleteDuplicatePoints( result );
+  return vector <Point>{result.begin(), result.end()};
 }
 
 vector <Point>
 Multiline::intersect(const Circle& circle) const
 {
-  vector <Point> result;
-  vector <Point> tmp;
-  for (int i = 0; i < this->points_.size() - 1; ++i) {
-    tmp = Line( this->points_[i], this->points_[i + 1] ).intersect( circle );
-    for (auto it: tmp)
-      result.push_back(it);
-  }
-
-  return deleteDuplicatePoints( result );
+  return this->intersect((GeometricFigure&) circle );
 }
 
 vector <Point>
 Multiline::intersect(const Multiline& multiline) const
 {
-  vector <Point> result;
-  vector <Point> tmp;
-  for (int i = 0; i < this->points_.size() - 1; ++i) {
-    Line tmpLine( this->points_[i], this->points_[i + 1] );
-    tmp = tmpLine.intersect( multiline );
-    for (auto it: tmp)
-      result.push_back(it);
-  }
-
-  return deleteDuplicatePoints( result );
+  return this->intersect((GeometricFigure&) multiline );
 }
