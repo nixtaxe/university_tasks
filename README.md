@@ -1,0 +1,1 @@
+[Style guide reference](http://geosoft.no/development/cppstyle.html)
