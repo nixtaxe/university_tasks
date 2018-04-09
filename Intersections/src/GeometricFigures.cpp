@@ -71,25 +71,30 @@ Circle::intersect(const Line& line) const
   double c = pow( difP1C.x, 2.0 ) + pow( difP1C.y, 2.0 ) - r * r;
 
   double discriminant = b * b - 4.0 * a * c;
-  if (abs( discriminant ) <= EPS) {
+  bool areIntersectingAtOnePoint = abs( discriminant ) < EPS;
+
+  if (areIntersectingAtOnePoint) {
     double t = -b / (2.0 * a);
     return vector <Point>{{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
   }
-  if (discriminant < 0.0)
-    return vector <Point>{};
-  else {
+
+  bool areIntersecting = discriminant < 0.0;
+
+  if (areIntersecting) {
     double t1 = (-b + sqrt( discriminant )) / (2.0 * a);
     double t2 = (-b - sqrt( discriminant )) / (2.0 * a);
 
     vector <Point> result;
     if (t1 >= 0.0 && t1 <= 1.0)
-      result.push_back((Point){p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y});
+      result.push_back((Point) {p1.x + t1 * difP2P1.x, p1.y + t1 * difP2P1.y} );
 
     if (t2 >= 0.0 && t2 <= 1.0)
-      result.push_back((Point){p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y});
+      result.push_back((Point) {p1.x + t2 * difP2P1.x, p1.y + t2 * difP2P1.y} );
 
     return result;
   }
+  else
+    return vector <Point>{};
 }
 
 vector <Point>
@@ -107,6 +112,7 @@ Circle::intersect(const Circle& circle) const
   bool isTooFar = dist > (maxR + minR);
   bool isOneInsideAnother = maxR > (dist + minR);
   bool isEqual = dist < EPS && (maxR - minR) < EPS;
+
   if (isTooFar || isOneInsideAnother || isEqual)
     return vector <Point>{};
 
@@ -122,7 +128,9 @@ Circle::intersect(const Circle& circle) const
   double x1 = xh + deltaX;
   double y1 = yh - deltaY;
 
-  if (abs( h ) < EPS)
+  bool areIntersectingAtOnePoint = abs( h ) < EPS;
+
+  if (areIntersectingAtOnePoint)
     return vector <Point>{(Point) {.x = x1, .y = y1}};
 
   double x2 = xh - deltaX;
@@ -194,7 +202,9 @@ Line::intersect(const Line& line) const
 
   bool areCollinear = (abs((p2.y - p1.y) * p3.x - (p2.x - p1.x) * p3.y +
                            p2.x * p1.y - p2.y * p1.x ) /
-                           this->length()) < EPS;
+                       this->length()) < EPS;
+
+  bool areParallel = abs( denominator ) < EPS;
 
   vector <Point> result;
   if (areCollinear) {
@@ -211,20 +221,23 @@ Line::intersect(const Line& line) const
       result.push_back( p4 );
 
     return result;
-  } else if (abs( denominator ) < EPS)
+  }
+  else if (areParallel)
     return vector <Point>{};
 
   double u1 = ((p4.x - p3.x) * (p1.y - p3.y) -
                (p4.y - p3.y) * (p1.x - p3.x)) /
-               denominator;
+              denominator;
 
   double u2 = ((p2.x - p1.x) * (p1.y - p3.y) -
                (p2.y - p1.y) * (p1.x - p3.x)) /
-               denominator;
+              denominator;
 
-  if (u1 >= 0.0 && u1 <= 1.0 && u2 >= 0.0 && u2 <= 1.0) {
+  bool areIntersecting = u1 >= 0.0 && u1 <= 1.0 && u2 >= 0.0 && u2 <= 1.0;
+
+  if (areIntersecting) {
     Point p = {.x = p1.x + u1 * (p2.x - p1.x),
-               .y = p1.y + u1 * (p2.y - p1.y)};
+        .y = p1.y + u1 * (p2.y - p1.y)};
     result.push_back( p );
   }
 
@@ -259,6 +272,7 @@ Multiline::length() const
   for (int i = 0; i < points_.size() - 1; ++i) {
     result += Line{points_[i], points_[i + 1]}.length();
   }
+
   return result;
 }
 

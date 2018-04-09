@@ -46,6 +46,7 @@
     </Objective-C-extensions>
     <codeStyleSettings language="ObjectiveC">
       <option name="CLASS_BRACE_STYLE" value="2" />
+      <option name="ELSE_ON_NEW_LINE" value="true" />
       <indentOptions>
         <option name="INDENT_SIZE" value="2" />
         <option name="CONTINUATION_INDENT_SIZE" value="4" />
