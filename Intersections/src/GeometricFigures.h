@@ -8,137 +8,138 @@
 
 using std::vector;
 
-class GeometricFigure;
-
-class Line;
-
-class Circle;
-
-class Multiline;
-
+//TODO поместить Point в namespace figures
 struct Point
 {
   double x, y;
 };
 
-bool operator <(const Point& a, const Point& b);
+bool
+operator<(const Point&, const Point&);
 
-class GeometricFigure
+bool
+operator==(const Point&, const Point&);
+
+namespace figures
 {
-public:
-  virtual
-  ~GeometricFigure() = default;
+  class GeometricFigure;
 
-  virtual double
-  length() const = 0;
+  class Line;
 
-  virtual vector <Point>
-  intersect(const GeometricFigure&) const = 0;
+  class Circle;
 
-  virtual vector <Point>
-  intersect(const Line&) const = 0;
+  class Polyline;
 
-  virtual vector <Point>
-  intersect(const Circle&) const = 0;
+  class GeometricFigure
+  {
+  public:
+    virtual
+    ~GeometricFigure() = default;
 
-  virtual vector <Point>
-  intersect(const Multiline&) const = 0;
-};
+    virtual double
+    length() const = 0;
 
+    virtual vector <Point>
+    intersect(const GeometricFigure&) const = 0;
 
-class Circle : public GeometricFigure
-{
-public:
-  Circle(const Point& center, double radius);
+    virtual vector <Point>
+    intersect(const Line&) const = 0;
 
-//  ~Circle() override;
-//TODO Remove destructors
+    virtual vector <Point>
+    intersect(const Circle&) const = 0;
 
-  Point
-  getCenter() const;
-
-  double
-  getRadius() const;
-
-  double
-  length() const override;
-
-  vector <Point>
-  intersect(const GeometricFigure&) const override;
-
-  vector <Point>
-  intersect(const Line&) const override;
-
-  vector <Point>
-  intersect(const Circle&) const override;
-
-  vector <Point>
-  intersect(const Multiline&) const override;
-
-private:
-  Point center_;
-  double radius_;
-};
+    virtual vector <Point>
+    intersect(const Polyline&) const = 0;
+  };
 
 
-class Line : public GeometricFigure
-{
-public:
-  Line(const Point& start, const Point& end);
+  class Circle : public GeometricFigure
+  {
+  public:
+    Circle(const Point& center, double radius);
 
-  ~Line() override;
+    Point
+    getCenter() const;
 
-  Point
-  getStart() const;
+    double
+    getRadius() const;
 
-  Point
-  getEnd() const;
+    double
+    length() const override;
 
-  double
-  length() const override;
+    vector <Point>
+    intersect(const GeometricFigure&) const override;
 
-  vector <Point>
-  intersect(const GeometricFigure&) const override;
+    vector <Point>
+    intersect(const Line&) const override;
 
-  vector <Point>
-  intersect(const Line&) const override;
+    vector <Point>
+    intersect(const Circle&) const override;
 
-  vector <Point>
-  intersect(const Circle&) const override;
+    vector <Point>
+    intersect(const Polyline&) const override;
 
-  vector <Point>
-  intersect(const Multiline&) const override;
-
-private:
-  bool
-  isPointOnLine(const Point& point, const Line& line) const;
-
-  Point start_, end_;
-};
+  private:
+    Point center_;
+    double radius_;
+  };
 
 
-class Multiline : public GeometricFigure
-{
-public:
-  Multiline(const vector <Point>& points);
+  class Line : public GeometricFigure
+  {
+  public:
+    Line(const Point& start, const Point& end);
 
-  ~Multiline() override;
+    Point
+    getStart() const;
 
-  double
-  length() const override;
+    Point
+    getEnd() const;
 
-  vector <Point>
-  intersect(const GeometricFigure&) const override;
+    double
+    length() const override;
 
-  vector <Point>
-  intersect(const Line&) const override;
+    vector <Point>
+    intersect(const GeometricFigure&) const override;
 
-  vector <Point>
-  intersect(const Circle&) const override;
+    vector <Point>
+    intersect(const Line&) const override;
 
-  vector <Point>
-  intersect(const Multiline&) const override;
+    vector <Point>
+    intersect(const Circle&) const override;
 
-private:
-  vector <Point> points_;
-};
+    vector <Point>
+    intersect(const Polyline&) const override;
+
+  private:
+    bool
+    isPointOnLine(const Point& point, const Line& line) const;
+
+    Point start_, end_;
+  };
+
+
+  class Polyline : public GeometricFigure
+  {
+  public:
+    Polyline(const vector <Point>& points);
+
+    double
+    length() const override;
+
+    vector <Point>
+    intersect(const GeometricFigure&) const override;
+
+    vector <Point>
+    intersect(const Line&) const override;
+
+    vector <Point>
+    intersect(const Circle&) const override;
+
+    vector <Point>
+    intersect(const Polyline&) const override;
+
+  private:
+    vector <Point> points_;
+  };
+}

@@ -6,16 +6,18 @@
 #define CATCH_CONFIG_MAIN
 #define EPS 2e-16
 
-//#include <cmath>
-#include <math.h>
+#include <cmath>
 #include "catch.h"
 #include "GeometricFigures.h"
+
+using namespace figures;
 
 TEST_CASE( "Circle tests", "[]" )
 {
   SECTION( "Check circle length" ) {
     Circle c1((Point) {.x = 0.0, .y = 0.0}, 1.0 );
-    REQUIRE( c1.length() == 2.0 * M_PI );
+    double expectedLength = 2.0 * M_PI;
+    REQUIRE( abs( c1.length() - expectedLength ) < EPS );
   }
 
   SECTION( "Check circle-circle intersection" ) {
@@ -24,11 +26,16 @@ TEST_CASE( "Circle tests", "[]" )
       Circle c1((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Circle c2((Point) {.x = 1.0, .y = 0.0}, 1.0 );
 
+      int expectedSize = 2;
+      Point expectedPoint1 = {.x = 0.5, .y = -0.8660254037844386};
+      Point expectedPoint2 = {.x = 0.5, .y = 0.8660254037844386};
+
       THEN ( "Return vector with two points" ) {
         vector<Point> result = c1.intersect( c2 );
-        REQUIRE( result.size() == 2 );
-        REQUIRE ( abs( result[0].x - 0.5 ) < EPS );
-        REQUIRE ( abs( result[1].x - 0.5 ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE ( result[0] == expectedPoint1 );
+        REQUIRE ( result[1] == expectedPoint2 );
       }
     }
 
@@ -36,11 +43,14 @@ TEST_CASE( "Circle tests", "[]" )
       Circle c1((Point) {.x = 0.0, .y = 0.0}, 1.0 );
       Circle c2((Point) {.x = sqrt( 2.0 ), .y = sqrt( 2.0 )}, 1.0 );
 
+      int expectedSize = 1;
+      Point expectedPoint = {.x = 1 / sqrt( 2.0 ), .y = 1 / sqrt( 2.0 )};
+
       THEN ( "Return vector with one point" ) {
         vector<Point> result = c1.intersect( c2 );
-        REQUIRE( result.size() == 1 );
-        REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 )) < EPS );
-        REQUIRE ( abs( result[0].y - 1 / sqrt( 2.0 )) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE ( result[0] == expectedPoint );
       }
     }
 
@@ -50,6 +60,7 @@ TEST_CASE( "Circle tests", "[]" )
 
       THEN ( "Return vector with no points" ) {
         vector<Point> result = c1.intersect( c2 );
+
         REQUIRE( result.empty() );
       }
     }
@@ -62,13 +73,17 @@ TEST_CASE( "Circle tests", "[]" )
       Line line((Point) {.x = -1.0, .y = 2.0},
                 (Point) {.x = 2.0, .y = -1.0} );
 
+      int expectedSize = 2;
+      Point expectedPoint1 = {.x = 1.0, .y = 0.0};
+      Point expectedPoint2 = {.x = 0.0, .y = 1.0};
+
+
       THEN ( "Return vector with two points" ) {
         vector<Point> result = circle.intersect( line );
-        REQUIRE( result.size() == 2 );
-        REQUIRE( abs( result[1].x ) < EPS );
-        REQUIRE( abs( result[1].y - 1.0 ) < EPS );
-        REQUIRE( abs( result[0].x - 1.0 ) < EPS );
-        REQUIRE( abs( result[0].y ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint1 );
+        REQUIRE( result[1] == expectedPoint2 );
       }
     }
 
@@ -77,13 +92,14 @@ TEST_CASE( "Circle tests", "[]" )
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 2.0, .y = 0.0} );
 
+      int expectedSize = 1;
+      Point expectedPoint = {.x = 1.0, .y = 0.0};
+
       THEN ( "Return vector with one point" ) {
-        //TODO: Expected points
-        //TODO: Cmp function for points
         vector<Point> result = circle.intersect( line );
-        REQUIRE( result.size() == 1 );
-        REQUIRE( abs( result[0].x - 1.0 ) < EPS );
-        REQUIRE( abs( result[0].y ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint );
       }
     }
 
@@ -92,11 +108,14 @@ TEST_CASE( "Circle tests", "[]" )
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
 
+      int expectedSize = 1;
+      Point expectedPoint = {.x = 0.0, .y = 1.0};
+
       THEN ( "Return one point" ) {
         vector<Point> result = circle.intersect( line );
-        REQUIRE( result.size() == 1 );
-        REQUIRE( abs( result[0].x ) < EPS );
-        REQUIRE( abs( result[0].y - 1.0 ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint );
       }
     }
 
@@ -107,6 +126,7 @@ TEST_CASE( "Circle tests", "[]" )
 
       THEN ( "Return empty vector" ) {
         vector<Point> result = circle.intersect( line );
+
         REQUIRE( result.empty() );
       }
     }
@@ -118,7 +138,8 @@ TEST_CASE( "Line tests", "[]" )
   SECTION( "Check line length" ) {
     Line line((Point) {.x = 0.0, .y = 0.0},
               (Point) {.x = 1.0, .y = 0.0} );
-    REQUIRE( abs( line.length() - 1.0 ) < EPS );
+    double expectedLength = 1.0;
+    REQUIRE( abs( line.length() - expectedLength ) < EPS );
   }
 
   SECTION( "Check line-circle intersection" ) {
@@ -128,13 +149,16 @@ TEST_CASE( "Line tests", "[]" )
       Line line((Point) {.x = -1.0, .y = 2.0},
                 (Point) {.x = 2.0, .y = -1.0} );
 
+      int expectedSize = 2;
+      Point expectedPoint1 = {.x = 1.0, .y = 0.0};
+      Point expectedPoint2 = {.x = 0.0, .y = 1.0};
+
       THEN ( "Return vector with two points" ) {
         vector<Point> result = line.intersect( circle );
-        REQUIRE( result.size() == 2 );
-        REQUIRE( abs( result[1].x ) < EPS );
-        REQUIRE( abs( result[1].y - 1.0 ) < EPS );
-        REQUIRE( abs( result[0].x - 1.0 ) < EPS );
-        REQUIRE( abs( result[0].y ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint1 );
+        REQUIRE( result[1] == expectedPoint2 );
       }
     }
 
@@ -143,11 +167,14 @@ TEST_CASE( "Line tests", "[]" )
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 2.0, .y = 0.0} );
 
+      int expectedSize = 1;
+      Point expectedPoint = {.x = 1.0, .y = 0.0};
+
       THEN ( "Return vector with one point" ) {
         vector<Point> result = line.intersect( circle );
-        REQUIRE( result.size() == 1 );
-        REQUIRE( abs( result[0].x - 1.0 ) < EPS );
-        REQUIRE( abs( result[0].y ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint );
       }
     }
 
@@ -156,11 +183,14 @@ TEST_CASE( "Line tests", "[]" )
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
 
+      int expectedSize = 1;
+      Point expectedPoint = {.x = 0.0, .y = 1.0};
+
       THEN ( "Return vector with one point" ) {
         vector<Point> result = line.intersect( circle );
-        REQUIRE( result.size() == 1 );
-        REQUIRE( abs( result[0].x ) < EPS );
-        REQUIRE( abs( result[0].y - 1.0 ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint );
       }
     }
 
@@ -171,6 +201,7 @@ TEST_CASE( "Line tests", "[]" )
 
       THEN ( "Return empty vector" ) {
         vector<Point> result = line.intersect( circle );
+
         REQUIRE( result.empty() );
       }
     }
@@ -184,11 +215,14 @@ TEST_CASE( "Line tests", "[]" )
       Line line2((Point) {.x = -1.0, .y = 1.0},
                  (Point) {.x = 1.0, .y = 1.0} );
 
+      int expectedSize = 1;
+      Point expectedPoint = {.x = 0.0, .y = 1.0};
+
       THEN ( "Return vector with one point" ) {
         vector<Point> result = line1.intersect( line2 );
-        REQUIRE( result.size() == 1 );
-        REQUIRE( abs( result[0].x ) < EPS );
-        REQUIRE( abs( result[0].y - 1.0 ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint );
       }
     }
 
@@ -198,13 +232,16 @@ TEST_CASE( "Line tests", "[]" )
       Line line2((Point) {.x = 0.0, .y = -1.0},
                  (Point) {.x = 0.0, .y = 3.0} );
 
+      int expectedSize = 2;
+      Point expectedPoint1 = {.x = 0.0, .y = 0.0};
+      Point expectedPoint2 = {.x = 0.0, .y = 2.0};
+
       THEN ( "Return vector with two points" ) {
         vector<Point> result = line1.intersect( line2 );
-        REQUIRE( result.size() == 2 );
-        REQUIRE( abs( result[0].x ) < EPS );
-        REQUIRE( abs( result[1].x ) < EPS );
-        REQUIRE( abs( result[1].y - 2.0 ) < EPS );
-        REQUIRE( abs( result[0].y ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint1 );
+        REQUIRE( result[1] == expectedPoint2 );
       }
     }
 
@@ -216,6 +253,7 @@ TEST_CASE( "Line tests", "[]" )
 
       THEN ( "Return vector with no points" ) {
         vector<Point> result = line1.intersect( line2 );
+
         REQUIRE( result.empty() );
       }
     }
@@ -228,27 +266,29 @@ TEST_CASE( "Line tests", "[]" )
 
       THEN ( "Return vector with no points" ) {
         vector<Point> result = line1.intersect( line2 );
+
         REQUIRE( result.empty() );
       }
     }
   }
 }
 
-TEST_CASE( "Multiline tests", "[]" )
+TEST_CASE( "Polyline tests", "[]" )
 {
-  SECTION( "Check multiline length" ) {
+  SECTION( "Check polyline length" ) {
     vector<Point> v {(Point) {.x = 0.0, .y = 1.0},
                      (Point) {.x = 1.0, .y = 1.0},
                      (Point) {.x = 1.0, .y = 0.0},
                      (Point) {.x = 0.0, .y = 0.0},
                      (Point) {.x = 0.0, .y = 1.0}};
-    Multiline multiline( v );
-    REQUIRE( abs( multiline.length() - 4.0 ) < EPS );
+    Polyline polyline( v );
+    double expectedLength = 4.0;
+    REQUIRE( abs( polyline.length() - expectedLength ) < EPS );
   }
 
-  SECTION( "Check multiline-line intersection" ) {
+  SECTION( "Check polyline-line intersection" ) {
 
-    WHEN( "Line intersects multiline in multiple similar points" ) {
+    WHEN( "Line intersects polyline in multiple similar points" ) {
       Line line((Point) {.x = 0.0, .y = 0.0},
                 (Point) {.x = 0.0, .y = 2.0} );
       vector<Point> v {(Point) {.x = 0.0, .y = 1.0},
@@ -256,15 +296,18 @@ TEST_CASE( "Multiline tests", "[]" )
                        (Point) {.x = 0.0, .y = 2.0},
                        (Point) {.x = 0.0, .y = 1.0},
                        (Point) {.x = 0.0, .y = 0.0}};
-      Multiline multiline( v );
+      Polyline polyline( v );
+
+      int expectedSize = 3;
 
       THEN( "Return vector with original points" ) {
-        vector<Point> result = multiline.intersect( line );
-        REQUIRE( result.size() == 3 );
+        vector<Point> result = polyline.intersect( line );
+
+        REQUIRE( result.size() == expectedSize );
       }
     }
 
-    WHEN( "Line is not intersecting multiline" ) {
+    WHEN( "Line is not intersecting polyline" ) {
       Line line((Point) {.x = -1.0, .y = -1.0},
                 (Point) {.x = -1.0, .y = 2.0} );
       vector<Point> v {(Point) {.x = 0.0, .y = 1.0},
@@ -272,75 +315,84 @@ TEST_CASE( "Multiline tests", "[]" )
                        (Point) {.x = 0.0, .y = 2.0},
                        (Point) {.x = 0.0, .y = 1.0},
                        (Point) {.x = 0.0, .y = 0.0}};
-      Multiline multiline( v );
+      Polyline polyline( v );
 
       THEN( "Return vector no points" ) {
-        vector<Point> result = multiline.intersect( line );
+        vector<Point> result = polyline.intersect( line );
+
         REQUIRE( result.empty() );
       }
     }
   }
 
-  SECTION( "Check multiline-multiline intersection" ) {
+  SECTION( "Check polyline-polyline intersection" ) {
 
-    WHEN( "Multiline intersects multiline in one point" ) {
+    WHEN( "Polyline intersects polyline in one point" ) {
       vector<Point> v1 {(Point) {.x = 0.0, .y = 1.0},
                         (Point) {.x = 1.0, .y = 1.0}};
-      Multiline multiline1( v1 );
+      Polyline multiline1( v1 );
       vector<Point> v2 {(Point) {.x = 0.5, .y = 2.0},
                         (Point) {.x = 0.5, .y = 0.5}};
-      Multiline multiline2( v2 );
+      Polyline multiline2( v2 );
+
+      int expectedSize = 1;
+      Point expectedPoint = {.x = 0.5, .y = 1.0};
 
       THEN( "Return vector with one point" ) {
         vector<Point> result = multiline1.intersect( multiline2 );
-        REQUIRE( result.size() == 1 );
-        REQUIRE( abs( result[0].x - 0.5 ) < EPS );
-        REQUIRE( abs( result[0].y - 1.0 ) < EPS );
+
+        REQUIRE( result.size() == expectedSize );
+        REQUIRE( result[0] == expectedPoint );
       }
     }
 
-    WHEN( "Multiline is not intersecting multiline" ) {
+    WHEN( "Polyline is not intersecting polyline" ) {
       vector<Point> v1 {(Point) {.x = 1.0, .y = 1.0},
                         (Point) {.x = 2.0, .y = 2.0},
                         (Point) {.x = 3.0, .y = 3.0}};
-      Multiline multiline1( v1 );
+      Polyline multiline1( v1 );
       vector<Point> v2 {(Point) {.x = 0.5, .y = 1.0},
                         (Point) {.x = 0.5, .y = 0.5},
                         (Point) {.x = 0.5, .y = 0.0}};
-      Multiline multiline2( v2 );
+      Polyline multiline2( v2 );
 
       THEN( "Return vector with no points" ) {
         vector<Point> result = multiline1.intersect( multiline2 );
+
         REQUIRE( result.empty() );
       }
     }
   }
 
-  SECTION( "Check multiline-cirlce intersection" ) {
+  SECTION( "Check polyline-cirlce intersection" ) {
 
-    WHEN( "Multiline intersects circle in multiple points" ) {
+    WHEN( "Polyline intersects circle in multiple points" ) {
       vector<Point> v1 {(Point) {.x = -1.0, .y = 0.0},
                         (Point) {.x = 0.0, .y = 1.0},
                         (Point) {.x = 1.0, .y = 0.0},
                         (Point) {.x = 0.0, .y = -1.0}};
-      Multiline multiline1( v1 );
+      Polyline multiline1( v1 );
       Circle circle( (Point) {.x = 0.0, .y = 0.0}, 1.0);
+
+      int expectedSize = 4;
 
       THEN( "Return vector with one point" ) {
         vector<Point> result = multiline1.intersect( circle );
-        REQUIRE( result.size() == 4 );
+
+        REQUIRE( result.size() == expectedSize );
       }
     }
 
-    WHEN( "Multiline is not intersecting circle" ) {
+    WHEN( "Polyline is not intersecting circle" ) {
       vector<Point> v1 {(Point) {.x = 1.0, .y = 1.0},
                         (Point) {.x = 2.0, .y = 2.0},
                         (Point) {.x = 3.0, .y = 3.0}};
-      Multiline multiline1( v1 );
+      Polyline multiline1( v1 );
       Circle circle( (Point) {.x = -1.0, .y = 0.0}, 1.0 );
 
       THEN( "Return vector with no points" ) {
         vector<Point> result = multiline1.intersect( circle );
+
         REQUIRE( result.empty() );
       }
     }
@@ -368,7 +420,9 @@ TEST_CASE( "Vector of geometric figures tests", "[]" )
            result.push_back(it);
     }
 
-    REQUIRE( result.size() == 4 );
+    int expectedSize = 4;
+
+    REQUIRE( result.size() == expectedSize );
 
   }
 }

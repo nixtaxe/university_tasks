@@ -11,6 +11,7 @@
 #include <set>
 
 using namespace std;
+using namespace figures;
 
 bool
 operator<(const Point& a, const Point& b)
@@ -21,13 +22,17 @@ operator<(const Point& a, const Point& b)
     return a.x < b.x;
 }
 
+bool
+operator==(const Point& a, const Point& b)
+{
+  return (abs( a.x - b.x ) < EPS) && (abs( a.y - b.y ) < EPS);
+}
+
 Circle::Circle(const Point& center, double radius)
     : center_( center ), radius_( radius )
 {
-  ;
-}
 
-//Circle::~Circle() = default;
+}
 
 Point
 Circle::getCenter() const
@@ -141,7 +146,7 @@ Circle::intersect(const Circle& circle) const
 }
 
 vector <Point>
-Circle::intersect(const Multiline& multiLine) const
+Circle::intersect(const Polyline& multiLine) const
 {
   return multiLine.intersect( *this );
 }
@@ -152,8 +157,6 @@ Line::Line(const Point& start, const Point& end)
 {
 
 }
-
-Line::~Line() = default;
 
 Point
 Line::getStart() const
@@ -251,22 +254,20 @@ Line::intersect(const Circle& circle) const
 }
 
 vector <Point>
-Line::intersect(const Multiline& multiline) const
+Line::intersect(const Polyline& polyline) const
 {
-  return multiline.intersect( *this );
+  return polyline.intersect( *this );
 }
 
 
-Multiline::Multiline(const vector <Point>& points)
+Polyline::Polyline(const vector <Point>& points)
     : points_( points )
 {
-  ;
+
 }
 
-Multiline::~Multiline() = default;
-
 double
-Multiline::length() const
+Polyline::length() const
 {
   double result = 0.0;
   for (int i = 0; i < points_.size() - 1; ++i) {
@@ -277,7 +278,7 @@ Multiline::length() const
 }
 
 vector <Point>
-Multiline::intersect(const GeometricFigure& geometricFigure) const
+Polyline::intersect(const GeometricFigure& geometricFigure) const
 {
   set <Point> result;
   vector <Point> aVector;
@@ -291,7 +292,7 @@ Multiline::intersect(const GeometricFigure& geometricFigure) const
 }
 
 vector <Point>
-Multiline::intersect(const Line& line) const
+Polyline::intersect(const Line& line) const
 {
   set <Point> result;
   vector <Point> aVector;
@@ -305,13 +306,13 @@ Multiline::intersect(const Line& line) const
 }
 
 vector <Point>
-Multiline::intersect(const Circle& circle) const
+Polyline::intersect(const Circle& circle) const
 {
   return this->intersect((GeometricFigure&) circle );
 }
 
 vector <Point>
-Multiline::intersect(const Multiline& multiline) const
+Polyline::intersect(const Polyline& polyline) const
 {
-  return this->intersect((GeometricFigure&) multiline );
+  return this->intersect((GeometricFigure&) polyline );
 }
