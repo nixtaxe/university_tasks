@@ -51,7 +51,8 @@ class Circle : public GeometricFigure
 public:
   Circle(const Point& center, double radius);
 
-  ~Circle() override;
+//  ~Circle() override;
+//TODO Remove destructors
 
   Point
   getCenter() const;

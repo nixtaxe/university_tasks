@@ -2,10 +2,12 @@
 // Created by nixtaxe on 01.03.2018.
 //
 
+#define _USE_MATH_DEFINES
 #define CATCH_CONFIG_MAIN
 #define EPS 2e-16
 
-#include <cmath>
+//#include <cmath>
+#include <math.h>
 #include "catch.h"
 #include "GeometricFigures.h"
 
@@ -38,7 +40,7 @@ TEST_CASE( "Circle tests", "[]" )
         vector<Point> result = c1.intersect( c2 );
         REQUIRE( result.size() == 1 );
         REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 )) < EPS );
-        REQUIRE ( abs( result[0].x - 1 / sqrt( 2.0 )) < EPS );
+        REQUIRE ( abs( result[0].y - 1 / sqrt( 2.0 )) < EPS );
       }
     }
 
@@ -76,6 +78,8 @@ TEST_CASE( "Circle tests", "[]" )
                 (Point) {.x = 2.0, .y = 0.0} );
 
       THEN ( "Return vector with one point" ) {
+        //TODO: Expected points
+        //TODO: Cmp function for points
         vector<Point> result = circle.intersect( line );
         REQUIRE( result.size() == 1 );
         REQUIRE( abs( result[0].x - 1.0 ) < EPS );

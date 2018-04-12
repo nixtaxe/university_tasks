@@ -27,7 +27,7 @@ Circle::Circle(const Point& center, double radius)
   ;
 }
 
-Circle::~Circle() = default;
+//Circle::~Circle() = default;
 
 Point
 Circle::getCenter() const
@@ -78,7 +78,7 @@ Circle::intersect(const Line& line) const
     return vector <Point>{{p1.x + t * difP2P1.x, p1.y + t * difP2P1.y}};
   }
 
-  bool areIntersecting = discriminant < 0.0;
+  bool areIntersecting = discriminant > 0.0;
 
   if (areIntersecting) {
     double t1 = (-b + sqrt( discriminant )) / (2.0 * a);
@@ -150,7 +150,7 @@ Circle::intersect(const Multiline& multiLine) const
 Line::Line(const Point& start, const Point& end)
     : start_( start ), end_( end )
 {
-  ;
+
 }
 
 Line::~Line() = default;
